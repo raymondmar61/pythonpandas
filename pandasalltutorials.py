@@ -197,3 +197,186 @@ print(customoutputfromcolumnslist.head(3))
 customoutputfromcolumnslist.to_csv("pokemon_datamodified.csv", index=False)  #save custom output .csv file as pokemon_datamodified.csv without index row number
 customoutputfromcolumnslist.to_excel("pokemon_datamodified.xlsx", index=False)  #save custom output .xlsx file as pokemon_datamodified.xlsx without index row number
 customoutputfromcolumnslist.to_csv("pokemon_datamodified.txt", index=False, sep="\t")  #sep is used to specify the delimiter
+import pandas as pd
+
+dataframecsv = pd.read_csv("pokemon_data.csv")
+#print(dataframecsv.loc[dataframecsv["Type 1"] == "Grass"]) #print rows with Type 1 Grass
+#print(dataframecsv.loc[(dataframecsv["Type 1"] == "Grass") & (dataframecsv["Type 2"] == "Poison")]) #print rows with Type 1 Grass and Type 2 Poison
+#print(dataframecsv.loc[(dataframecsv["Type 1"] == "Grass") | (dataframecsv["Type 2"] == "Poison")]) #print rows with Type 1 Grass or Type 2 Poison
+grasspoisonhp70plus = dataframecsv.loc[(dataframecsv["Type 1"] == "Grass") & (dataframecsv["Type 2"] == "Poison") & (dataframecsv["HP"] > 70)]
+#print(grasspoisonhp70plus) #print rows with Type 1 Grass and Type 2 Poison and HP greater than 70
+#grasspoisonhp70plus.to_csv("grasspoisonhp70plusexporttocsvfile") #export rows with Type 1 Grass and Type 2 Poison and HP greater than 70 to .csv file
+resetindex = grasspoisonhp70plus.reset_index(drop=False) #reset index number to zero for filtered data.  Set drop to False to keep Original index number column from source data.
+#print(resetindex) #a new column leftmost new index column starting at zero.
+'''
+   index    #                   Name Type 1  Type 2   HP  Attack  Defense  \
+0      2    3               Venusaur  Grass  Poison   80      82       83
+1      3    3  VenusaurMega Venusaur  Grass  Poison   80     100      123
+2     50   45              Vileplume  Grass  Poison   75      80       85
+3     77   71             Victreebel  Grass  Poison   80     105       65
+4    652  591              Amoonguss  Grass  Poison  114      85       70
+...
+'''
+megapokemoncasesensitive = dataframecsv.loc[dataframecsv["Name"].str.contains("Mega")]
+#print(megapokemoncasesensitive) #print rows Pokemon contains Mega
+notmegapokemoncasesensitive = dataframecsv.loc[~dataframecsv["Name"].str.contains("Mega")]
+#print(notmegapokemoncasesensitive) #print rows Pokemon not contains Mega
+import re
+# fireorgrasspokemonregularexpressions = dataframecsv.loc[dataframecsv["Type 1"].str.contains("Fire|Grass", regex=True)]
+# print(fireorgrasspokemonregularexpressions)
+fireorgrasspokemonregularexpressions = dataframecsv.loc[dataframecsv["Type 1"].str.contains("fire|grass", flags=re.I, regex=True)] #re.I ignores case
+#print(fireorgrasspokemonregularexpressions)
+pokemonnameincludespi = dataframecsv.loc[dataframecsv["Name"].str.contains("pi[a-z]*", flags=re.I, regex=True)] #re.I ignores case
+#print(pokemonnameincludespi)
+pokemonnamebeginswithpi = dataframecsv.loc[dataframecsv["Name"].str.contains("^pi[a-z]*", flags=re.I, regex=True)] #re.I ignores case
+#print(pokemonnamebeginswithpi)
+renameflamerpokemon = dataframecsv.loc[dataframecsv["Type 1"] == "Fire", "Type 1"] = "Flamer"
+#print(dataframecsv) #Pokemon with Type 1 Fire changed to Flamer
+'''
+#                       Name    Type 1  Type 2   HP  Attack  Defense  \
+0      1                  Bulbasaur     Grass  Poison   45      49       49
+1      2                    Ivysaur     Grass  Poison   60      62       63
+2      3                   Venusaur     Grass  Poison   80      82       83
+3      3      VenusaurMega Venusaur     Grass  Poison   80     100      123
+4      4                 Charmander    Flamer     NaN   39      52       43
+...
+'''
+dataframecsv.loc[dataframecsv["Type 1"] == "Flamer", "Type 1"] = "Fire" #change Flamer back to Fire
+dataframecsv.loc[dataframecsv["Type 1"] == "Fire", "Legendary"] = True #set Type 1 Fire pokemon Legendary to True
+dataframecsv = pd.read_csv("pokemon_data.csv") #reset Pokemon data csv
+#update multiple columns multiple values
+totalgreater500500club = dataframecsv.loc[dataframecsv["HP"] + dataframecsv["Attack"] + dataframecsv["Defense"] + dataframecsv["Sp. Atk"] + dataframecsv["Sp. Def"] + dataframecsv["Speed"] > 500, ["Type 1", "Type 2"]] = ["500 Club", "5000 Clubs"]
+#print(dataframecsv) #numbers greater than 500 Type 1 and Type 2 changed to 500 Club
+'''
+#                       Name    Type 1      Type 2   HP  Attack  \
+0      1                  Bulbasaur     Grass      Poison   45      49   
+1      2                    Ivysaur     Grass      Poison   60      62   
+2      3                   Venusaur  500 Club  5000 Clubs   80      82   
+3      3      VenusaurMega Venusaur  500 Club  5000 Clubs   80     100   
+4      4                 Charmander      Fire         NaN   39      52   
+...
+'''
+dataframecsv = pd.read_csv("pokemon_data.csv") #reset Pokemon data csv
+#print(dataframecsv.groupby(["Type 1"]).mean().sort_values("Defense", ascending=False))  #mean, sum, count
+'''
+                   #         HP      Attack     Defense    Sp. Atk    Sp. Def  \
+Type 1                                                                          
+Steel     442.851852  65.222222   92.703704  126.370370  67.518519  80.629630   
+Rock      392.727273  65.363636   92.863636  100.795455  63.340909  75.477273   
+Dragon    474.375000  83.312500  112.125000   86.375000  96.843750  88.843750   
+Ground    356.281250  73.781250   95.750000   84.843750  56.468750  62.750000   
+Ghost     486.500000  64.437500   73.781250   81.187500  79.343750  76.468750   
+Water     303.089286  72.062500   74.151786   72.946429  74.812500  70.517857
+...
+'''
+createvariablereturncount = dataframecsv.groupby(["Type 1"]).count()
+#print(createvariablereturncount)
+'''
+            #  Name  Type 2   HP  Attack  Defense  Sp. Atk  Sp. Def  Speed  \
+Type 1                                                                       
+Bug        69    69      52   69      69       69       69       69     69   
+Dark       31    31      21   31      31       31       31       31     31   
+Dragon     32    32      21   32      32       32       32       32     32   
+Electric   44    44      17   44      44       44       44       44     44   
+Fairy      17    17       2   17      17       17       17       17     17   
+Fighting   27    27       7   27      27       27       27       27     27 
+...
+'''
+#print(createvariablereturncount["#"])
+'''
+Type 1
+Bug          69
+Dark         31
+Dragon       32
+Electric     44
+Fairy        17
+Fighting     27
+...
+Steel        27
+Water       112
+Name: #, dtype: int64
+'''
+#print(dataframecsv.groupby(["Type 1"]).count()["#"])
+'''
+Type 1
+Bug          69
+Dark         31
+Dragon       32
+Electric     44
+Fairy        17
+Fighting     27
+...
+Steel        27
+Water       112
+Name: #, dtype: int64
+'''
+#print(dataframecsv.groupby(["Type 1", "Type 2"]).count()["#"])
+'''
+Type 1    Type 2  
+Bug       Electric     2
+          Fighting     2
+          Fire         2
+          Flying      14
+          Ghost        1
+          Grass        6
+          Ground       2
+          Poison      12
+          Rock         3
+          Steel        7
+          Water        1
+Dark      Dragon       3
+          Fighting     2
+          Fire         3
+          Flying       5
+          Ghost        2
+          Ice          2
+          Psychic      2
+          Steel        2
+...
+'''
+getfiverows = pd.read_csv("pokemon_data.csv", chunksize=5)
+print(getfiverows) #print <pandas.io.parsers.TextFileReader object at 0x7fe5cc8120f0>
+for eachgetfiverows in getfiverows:
+    print(eachgetfiverows)
+    '''
+       #                   Name Type 1  Type 2  HP  Attack  Defense  Sp. Atk  \
+    0  1              Bulbasaur  Grass  Poison  45      49       49       65   
+    1  2                Ivysaur  Grass  Poison  60      62       63       80   
+    2  3               Venusaur  Grass  Poison  80      82       83      100   
+    3  3  VenusaurMega Venusaur  Grass  Poison  80     100      123      122   
+    4  4             Charmander   Fire     NaN  39      52       43       60   
+
+       Sp. Def  Speed  Generation  Legendary  
+    0       65     45           1      False  
+    1       80     60           1      False  
+    2      100     80           1      False  
+    3      120     80           1      False  
+    4       50     65           1      False  
+       #                       Name Type 1  Type 2  HP  Attack  Defense  Sp. Atk  \
+    5  5                 Charmeleon   Fire     NaN  58      64       58       80   
+    6  6                  Charizard   Fire  Flying  78      84       78      109   
+    7  6  CharizardMega Charizard X   Fire  Dragon  78     130      111      130   
+    8  6  CharizardMega Charizard Y   Fire  Flying  78     104       78      159   
+    9  7                   Squirtle  Water     NaN  44      48       65       50   
+
+       Sp. Def  Speed  Generation  Legendary  
+    5       65     80           1      False  
+    6       85    100           1      False  
+    7       85    100           1      False  
+    8      115    100           1      False  
+    9       64     43           1      False  
+         #                     Name Type 1  Type 2  HP  Attack  Defense  Sp. Atk  \
+    10   8                Wartortle  Water     NaN  59      63       80       65   
+    11   9                Blastoise  Water     NaN  79      83      100       85   
+    12   9  BlastoiseMega Blastoise  Water     NaN  79     103      120      135   
+    13  10                 Caterpie    Bug     NaN  45      30       35       20   
+    14  11                  Metapod    Bug     NaN  50      20       55       25   
+
+        Sp. Def  Speed  Generation  Legendary  
+    10       80     58           1      False  
+    11      105     78           1      False  
+    12      115     78           1      False  
+    13       20     45           1      False  
+    14       25     30           1      False  
+    ...
+    '''
