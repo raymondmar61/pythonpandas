@@ -58,9 +58,9 @@ print(dataframecsv.iloc[1:4]) #print rows 1, 2, and 3 iloc is integer location.
 '''
 print(dataframecsv.iloc[2, 1]) #print Venusaur.  Row 2 column 1.
 for index, row in dataframecsv.iterrows():
-    print(index, row) #print each row in a column format.
+  print(index, row) #print each row in a column format.
 for index, row in dataframecsv.iterrows():
-    print(index, row["Name"]) #print Now row in a column format.
+  print(index, row["Name"]) #print Now row in a column format.
 '''
 0 Bulbasaur
 1 Ivysaur
@@ -337,8 +337,8 @@ Dark      Dragon       3
 getfiverows = pd.read_csv("pokemon_data.csv", chunksize=5)
 print(getfiverows) #print <pandas.io.parsers.TextFileReader object at 0x7fe5cc8120f0>
 for eachgetfiverows in getfiverows:
-    print(eachgetfiverows)
-    '''
+  print(eachgetfiverows)
+  '''
        #                   Name Type 1  Type 2  HP  Attack  Defense  Sp. Atk  \
     0  1              Bulbasaur  Grass  Poison  45      49       49       65   
     1  2                Ivysaur  Grass  Poison  60      62       63       80   
@@ -380,3 +380,84 @@ for eachgetfiverows in getfiverows:
     14       25     30           1      False  
     ...
     '''
+
+#Python Pandas Tutorial -Part 1- Getting Started with Data Analysis - Installation and Loading Data
+dataframedf = pd.read_csv("developer_survey_2019/survey_results_public.csv")
+print(dataframedf)
+'''
+ Respondent                                         MainBranch Hobbyist  \
+0               1             I am a student who is learning to code      Yes   
+1               2             I am a student who is learning to code       No   
+2               3  I am not primarily a developer, but I write co...      Yes   
+3               4                     I am a developer by profession       No   
+4               5                     I am a developer by profession      Yes   
+5               6  I am not primarily a developer, but I write co...      Yes   
+6               7                     I am a developer by profession       No   
+...
+'''
+print(dataframedf.head(5)) #return number of rows starting from the top or first rows
+'''
+ Respondent                                         MainBranch Hobbyist  \
+0           1             I am a student who is learning to code      Yes   
+1           2             I am a student who is learning to code       No   
+2           3  I am not primarily a developer, but I write co...      Yes   
+3           4                     I am a developer by profession       No   
+4           5                     I am a developer by profession      Yes   
+'''
+print(dataframedf.tail(5)) #return number of rows starting from the bottom or last rows
+'''
+  Respondent MainBranch Hobbyist  \
+88878       88377        NaN      Yes   
+88879       88601        NaN       No   
+88880       88802        NaN       No   
+88881       88816        NaN       No   
+88882       88863        NaN      Yes   
+'''
+print(dataframedf.shape) #print (88883, 85) (columns, rows)
+print(dataframedf.info())
+'''
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 88883 entries, 0 to 88882
+Data columns (total 85 columns):
+Respondent                88883 non-null int64
+MainBranch                88331 non-null object
+Hobbyist                  88883 non-null object
+OpenSourcer               88883 non-null object
+OpenSource                86842 non-null object
+...
+Age                       79210 non-null float64
+Gender                    85406 non-null object
+Trans                     83607 non-null object
+Sexuality                 76147 non-null object
+Ethnicity                 76668 non-null object
+Dependents                83059 non-null object
+SurveyLength              86984 non-null object
+SurveyEase                87081 non-null object
+dtypes: float64(5), int64(1), object(79)
+memory usage: 57.6+ MB
+None
+'''
+pd.set_option("display.max_columns", 85) #allows number of columns to display horizontally
+readtheschema = pd.read_csv("developer_survey_2019/survey_results_schema.csv")
+print(readtheschema)
+'''
+            Column                                       QuestionText
+0       Respondent  Randomized respondent ID number (not in order ...
+1       MainBranch  Which of the following options best describes ...
+2         Hobbyist                            Do you code as a hobby?
+3      OpenSourcer        How often do you contribute to open source?
+4       OpenSource  How do you feel about the quality of open sour...
+5       Employment  Which of the following best describes your cur...
+6          Country          In which country do you currently reside?
+'''
+pd.set_option("display.max_columns", 1) #allows number of columns to display horizontally
+pd.set_option("display.max_rows", 3) #allows number of rows to display horizontally
+print(readtheschema)
+'''
+        Column     ...    
+0   Respondent     ...    
+..         ...     ...    
+84  SurveyEase     ...    
+
+[85 rows x 2 columns]
+'''
