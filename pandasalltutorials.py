@@ -461,3 +461,320 @@ print(readtheschema)
 
 [85 rows x 2 columns]
 '''
+
+#Python Pandas Tutorial -Part 2- DataFrame and Series Basics - Selecting Rows and Columns
+peopledatafreamedictionary = {"firstcolumn1": ["Corey", "Jane", "John", "row1"], "lastcolumn2": ["Shafer", "Doe", "Doe", "row2"], "emailcolumn3": ["coreymschafer@gmail.com", "janedoe@email.com", "johndoe@email.com", "row3"]}
+print(peopledatafreamedictionary) #print {'firstcolumn1': ['Corey', 'Jane', 'John', 'row1'], 'lastcolumn2': ['Shafer', 'Doe', 'Doe', 'row2'], 'emailcolumn3': ['coreymschafer@gmail.com', 'janedoe@email.com', 'johndoe@email.com', 'row3']}
+print(peopledatafreamedictionary["emailcolumn3"]) #print ['coreymschafer@gmail.com', 'janedoe@email.com', 'johndoe@email.com', 'row3']
+dataframeasdf = pd.DataFrame(peopledatafreamedictionary)
+print(dataframeasdf)
+'''
+              emailcolumn3 firstcolumn1 lastcolumn2
+0  coreymschafer@gmail.com        Corey      Shafer
+1        janedoe@email.com         Jane         Doe
+2        johndoe@email.com         John         Doe
+3                     row3         row1        row2
+'''
+print(dataframeasdf["emailcolumn3"])
+'''
+0    coreymschafer@gmail.com
+1          janedoe@email.com
+2          johndoe@email.com
+3                       row3
+Name: emailcolumn3, dtype: object
+'''
+print(type(dataframeasdf["emailcolumn3"])) #print <class 'pandas.core.series.Series'>
+print(dataframeasdf.emailcolumn3)
+'''
+0    coreymschafer@gmail.com
+1          janedoe@email.com
+2          johndoe@email.com
+3                       row3
+Name: emailcolumn3, dtype: object
+'''
+print(dataframeasdf[["lastcolumn2", "emailcolumn3"]])
+'''
+  lastcolumn2             emailcolumn3
+0      Shafer  coreymschafer@gmail.com
+1         Doe        janedoe@email.com
+2         Doe        johndoe@email.com
+3        row2                     row3
+'''
+print(type(dataframeasdf[["lastcolumn2", "emailcolumn3"]])) #print <class 'pandas.core.frame.DataFrame'>
+print(dataframeasdf.columns) #print Index(['emailcolumn3', 'firstcolumn1', 'lastcolumn2'], dtype='object')
+print(dataframeasdf.iloc[0])  #RM:  iloc is integer location
+'''
+emailcolumn3    coreymschafer@gmail.com
+firstcolumn1                      Corey
+lastcolumn2                      Shafer
+Name: 0, dtype: object
+'''
+print(dataframeasdf.iloc[[0, 1]])  #RM:  iloc is integer location
+'''
+              emailcolumn3 firstcolumn1 lastcolumn2
+0  coreymschafer@gmail.com        Corey      Shafer
+1        janedoe@email.com         Jane         Doe
+'''
+print(dataframeasdf.iloc[[0, 1], [1, 2]])  #RM:  iloc is integer location
+'''
+  firstcolumn1 lastcolumn2
+0        Corey      Shafer
+1         Jane         Doe
+'''
+print(dataframeasdf.loc[0])  #RM:  loc is label location
+'''
+emailcolumn3    coreymschafer@gmail.com
+firstcolumn1                      Corey
+lastcolumn2                      Shafer
+Name: 0, dtype: object
+'''
+print(dataframeasdf.loc[[0, 1]])  #RM:  loc is label location
+'''
+              emailcolumn3 firstcolumn1 lastcolumn2
+0  coreymschafer@gmail.com        Corey      Shafer
+1        janedoe@email.com         Jane         Doe
+'''
+#print(dataframeasdf.loc[[0, 1], [1, 2]]) #KeyError: 'None of [[1, 2]] are in the [columns]'
+print(dataframeasdf.loc[[0, 1], ["firstcolumn1", "lastcolumn2"]])
+'''
+  firstcolumn1 lastcolumn2
+0        Corey      Shafer
+1         Jane         Doe
+'''
+dataframedf = pd.read_csv("developer_survey_2019/survey_results_public.csv")
+readtheschema = pd.read_csv("developer_survey_2019/survey_results_schema.csv")
+pd.set_option("display.max_columns", 85) #allows number of columns to display horizontally
+pd.set_option("display.max_rows", 85) #allows number of rows to display horizontally
+print(dataframedf.head())
+'''
+Respondent                                         MainBranch Hobbyist  \
+0           1             I am a student who is learning to code      Yes
+1           2             I am a student who is learning to code       No
+2           3  I am not primarily a developer, but I write co...      Yes
+3           4                     I am a developer by profession       No
+4           5                     I am a developer by profession      Yes
+
+                  OpenSourcer  \
+0                       Never
+1     Less than once per year
+2                       Never
+3                       Never
+4  Once a month or more often
+
+                                          OpenSource  \
+0  The quality of OSS and closed source software ...
+1  The quality of OSS and closed source software ...
+2  The quality of OSS and closed source software ...
+3  The quality of OSS and closed source software ...
+4  OSS is, on average, of HIGHER quality than pro...
+...
+'''
+print(readtheschema.head())
+'''
+ Column                                       QuestionText
+0   Respondent  Randomized respondent ID number (not in order ...
+1   MainBranch  Which of the following options best describes ...
+2     Hobbyist                            Do you code as a hobby?
+3  OpenSourcer        How often do you contribute to open source?
+...
+'''
+print(dataframedf.shape) #print (88883, 85) (88883 rows, 85 columns)
+print(dataframedf.columns) #print Index(['Respondent', 'MainBranch', 'Hobbyist', 'OpenSourcer', 'OpenSource','Employment', 'Country', 'Student', 'EdLevel', 'UndergradMajor', 'EduOther', 'OrgSize', 'DevType', 'YearsCode', 'Age1stCode', 'YearsCodePro', 'CareerSat', 'JobSat', 'MgrIdiot', 'MgrMoney', 'MgrWant', 'JobSeek', 'LastHireDate', 'LastInt', 'FizzBuzz', 'JobFactors', 'ResumeUpdate', 'CurrencySymbol', 'CurrencyDesc', 'CompTotal', 'CompFreq', 'ConvertedComp', 'WorkWeekHrs', 'WorkPlan', 'WorkChallenge', 'WorkRemote', 'WorkLoc', 'ImpSyn', 'CodeRev', 'CodeRevHrs', 'UnitTests', 'PurchaseHow', 'PurchaseWhat', 'LanguageWorkedWith', 'LanguageDesireNextYear', 'DatabaseWorkedWith', 'DatabaseDesireNextYear', 'PlatformWorkedWith', 'PlatformDesireNextYear', 'WebFrameWorkedWith', 'WebFrameDesireNextYear', 'MiscTechWorkedWith', 'MiscTechDesireNextYear', 'DevEnviron', 'OpSys', 'Containers', 'BlockchainOrg', 'BlockchainIs', 'BetterLife', 'ITperson', 'OffOn', 'SocialMedia', 'Extraversion', 'ScreenName', 'SOVisit1st', 'SOVisitFreq', 'SOVisitTo', 'SOFindAnswer', 'SOTimeSaved', 'SOHowMuchTime', 'SOAccount', 'SOPartFreq', 'SOJobs', 'EntTeams', 'SOComm', 'WelcomeChange', 'SONewContent', 'Age', 'Gender', 'Trans', 'Sexuality', 'Ethnicity', 'Dependents', 'SurveyLength', 'SurveyEase'], dtype='object')
+print(dataframedf["Hobbyist"])
+'''
+0        Yes
+1         No
+2        Yes
+3         No
+4        Yes
+...
+88879     No
+88880     No
+88881     No
+88882    Yes
+Name: Hobbyist, Length: 88883, dtype: object
+'''
+print(dataframedf["Hobbyist"].value_counts())
+'''
+Yes    71257
+No     17626
+Name: Hobbyist, dtype: int64
+'''
+print(dataframedf.loc[0])
+'''
+Respondent                                                                1
+MainBranch                           I am a student who is learning to code
+Hobbyist                                                                Yes
+OpenSourcer                                                           Never
+OpenSource                The quality of OSS and closed source software ...
+Employment                           Not employed, and not looking for work
+Country                                                      United Kingdom
+...
+'''
+print(dataframedf.loc[0, "Hobbyist"]) #print Yes
+print(dataframedf.loc[[0, 1, 2], "Hobbyist"]) #Slicing is inclusive:inclusive
+'''
+0    Yes
+1     No
+2    Yes
+Name: Hobbyist, dtype: object
+'''
+print(dataframedf.loc[0:2, "Hobbyist":"Employment"]) #Slicing is inclusive:inclusive
+'''
+  Hobbyist              OpenSourcer  \
+0      Yes                    Never   
+1       No  Less than once per year   
+2      Yes                    Never   
+
+                                          OpenSource  \
+0  The quality of OSS and closed source software ...   
+1  The quality of OSS and closed source software ...   
+2  The quality of OSS and closed source software ...   
+
+                               Employment  
+0  Not employed, and not looking for work  
+1      Not employed, but looking for work  
+2                      Employed full-time  
+'''
+
+#Python Pandas Tutorial -Part 3- Indexes - How to Set- Reset- and Use Indexes
+peopledatafreamedictionary = {"firstcolumn1": ["Corey", "Jane", "John", "row1"], "lastcolumn2": ["Shafer", "Doe", "Doe", "row2"], "emailcolumn3": ["coreymschafer@gmail.com", "janedoe@email.com", "johndoe@email.com", "row3"]}
+print(peopledatafreamedictionary) #print {'firstcolumn1': ['Corey', 'Jane', 'John', 'row1'], 'lastcolumn2': ['Shafer', 'Doe', 'Doe', 'row2'], 'emailcolumn3': ['coreymschafer@gmail.com', 'janedoe@email.com', 'johndoe@email.com', 'row3']}
+print(peopledatafreamedictionary["emailcolumn3"]) #print ['coreymschafer@gmail.com', 'janedoe@email.com', 'johndoe@email.com', 'row3']
+dataframeasdf = pd.DataFrame(peopledatafreamedictionary)
+print(dataframeasdf)
+'''
+              emailcolumn3 firstcolumn1 lastcolumn2
+0  coreymschafer@gmail.com        Corey      Shafer
+1        janedoe@email.com         Jane         Doe
+2        johndoe@email.com         John         Doe
+3                     row3         row1        row2
+'''
+print(dataframeasdf.index) #print RangeIndex(start=0, stop=4, step=1)  RM:  default index numbers
+print(dataframeasdf["emailcolumn3"])
+'''
+0    coreymschafer@gmail.com
+1          janedoe@email.com
+2          johndoe@email.com
+3                       row3
+Name: emailcolumn3, dtype: object
+'''
+dataframeasdf.set_index("emailcolumn3")
+print(dataframeasdf)
+'''
+              emailcolumn3 firstcolumn1 lastcolumn2
+0  coreymschafer@gmail.com        Corey      Shafer
+1        janedoe@email.com         Jane         Doe
+2        johndoe@email.com         John         Doe
+3                     row3         row1        row2
+'''
+dataframeasdf.set_index("emailcolumn3", inplace=True)
+print(dataframeasdf)
+'''
+                        firstcolumn1 lastcolumn2
+emailcolumn3
+coreymschafer@gmail.com        Corey      Shafer
+janedoe@email.com               Jane         Doe
+johndoe@email.com               John         Doe
+row3                            row1        row2
+'''
+print(dataframeasdf.index) #print Index(['coreymschafer@gmail.com', 'janedoe@email.com', 'johndoe@email.com', 'row3'], dtype='object', name='emailcolumn3')
+print(dataframeasdf.loc["coreymschafer@gmail.com"])
+'''
+firstcolumn1     Corey
+lastcolumn2     Shafer
+Name: coreymschafer@gmail.com, dtype: object
+'''
+print(dataframeasdf.loc["coreymschafer@gmail.com", "lastcolumn2"]) #print Shafer
+#print(dataframeasdf.loc[0]) #print TypeError: cannot do label indexing on <class 'pandas.core.indexes.base.Index'> with these indexers [0] of <class 'int'>
+print(dataframeasdf.iloc[0])
+'''
+firstcolumn1     Corey
+lastcolumn2     Shafer
+Name: coreymschafer@gmail.com, dtype: object
+'''
+dataframeasdf.reset_index(inplace=True)
+print(dataframeasdf)
+'''
+              emailcolumn3 firstcolumn1 lastcolumn2
+0  coreymschafer@gmail.com        Corey      Shafer
+1        janedoe@email.com         Jane         Doe
+2        johndoe@email.com         John         Doe
+3                     row3         row1        row2
+'''
+dataframedf = pd.read_csv("developer_survey_2019/survey_results_public.csv", index_col="Respondent")
+readtheschema = pd.read_csv("developer_survey_2019/survey_results_schema.csv", index_col="Column")
+pd.set_option("display.max_columns", 85) #allows number of columns to display horizontally
+pd.set_option("display.max_rows", 85) #allows number of rows to display horizontally
+print(dataframedf.head())
+'''
+MainBranch Hobbyist  \
+Respondent                                                               
+1                      I am a student who is learning to code      Yes   
+2                      I am a student who is learning to code       No   
+3           I am not primarily a developer, but I write co...      Yes   
+4                              I am a developer by profession       No   
+5                              I am a developer by profession      Yes   
+
+                           OpenSourcer  \
+Respondent                               
+1                                Never   
+2              Less than once per year   
+3                                Never   
+4                                Never   
+5           Once a month or more often   
+
+                                                   OpenSource  \
+Respondent                                                      
+1           The quality of OSS and closed source software ...   
+2           The quality of OSS and closed source software ...   
+3           The quality of OSS and closed source software ...   
+4           The quality of OSS and closed source software ...   
+5           OSS is, on average, of HIGHER quality than pro...   
+...
+'''
+#dataframedf.set_index("Respondent") #RM:  an efficient way declare index at pd.read_csv()
+print(dataframedf.loc[1])
+'''
+MainBranch                           I am a student who is learning to code
+Hobbyist                                                                Yes
+OpenSourcer                                                           Never
+OpenSource                The quality of OSS and closed source software ...
+...
+'''
+#readtheschema.set_index("Column") #RM:  an efficient way declare index at pd.read_csv()
+print(readtheschema.head())
+'''
+ QuestionText
+Column                                                        
+Respondent   Randomized respondent ID number (not in order ...
+MainBranch   Which of the following options best describes ...
+Hobbyist                               Do you code as a hobby?
+OpenSourcer        How often do you contribute to open source?
+OpenSource   How do you feel about the quality of open sour...
+'''
+print(readtheschema.loc["Hobbyist"]) #print the Hobbyist row
+'''
+QuestionText    Do you code as a hobby?
+Name: Hobbyist, dtype: object
+#RM:  Column is the index.  Under Column column there is a Hobbyist row.  Under QuestionText column, the entry at Hobbyist row is Do you code as a hobby?
+'''
+print(readtheschema.loc["MgrIdiot"])
+'''
+QuestionText    How confident are you that your manager knows ...
+Name: MgrIdiot, dtype: object
+'''
+print(readtheschema.loc["MgrIdiot", "QuestionText"]) #print How confident are you that your manager knows what they’re doing?  #RM:  print the data at row MgrIdiot and column QuestionText
+print(readtheschema.sort_index(ascending=True, inplace=False)) #sort index column alphabetically
+'''
+QuestionText
+Column                                                                   
+Age                     What is your age (in years)? If you prefer not...
+Age1stCode              At what age did you write your first line of c...
+BetterLife              Do you think people born today will have a bet...
+BlockchainIs            Blockchain / cryptocurrency technology is prim...
+BlockchainOrg           How is your organization thinking about or imp...
+CareerSat               Overall, how satisfied are you with your caree...
+CodeRev                          Do you review code as part of your work?
+...
+
