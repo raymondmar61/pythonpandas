@@ -777,4 +777,432 @@ BlockchainOrg           How is your organization thinking about or imp...
 CareerSat               Overall, how satisfied are you with your caree...
 CodeRev                          Do you review code as part of your work?
 ...
+'''
 
+#Python Pandas Tutorial -Part 4- Filtering - Using Conditionals to Filter Rows and Columns
+import pandas as pd
+peopledatafreamedictionary = {"firstcolumn1": ["Corey", "Jane", "John", "row1"], "lastcolumn2": ["Schafer", "Doe", "Doe", "row2"], "emailcolumn3": ["coreymschafer@gmail.com", "janedoe@email.com", "johndoe@email.com", "row3"]}
+dataframe = pd.DataFrame(peopledatafreamedictionary)
+print(dataframe)
+'''
+              emailcolumn3 firstcolumn1 lastcolumn2
+0  coreymschafer@gmail.com        Corey      Schafer
+1        janedoe@email.com         Jane         Doe
+2        johndoe@email.com         John         Doe
+3                     row3         row1        row2
+'''
+print(dataframe["lastcolumn2"] == "Doe")
+'''
+0    False
+1    True
+2    True
+3    False
+Name: lastcolumn2, dtype: bool
+'''
+filterdoe = dataframe["lastcolumn2"] == "Doe"
+print(dataframe[filterdoe])
+'''
+        emailcolumn3 firstcolumn1 lastcolumn2
+1  janedoe@email.com         Jane         Doe
+2  johndoe@email.com         John         Doe
+'''
+print(dataframe.loc[filterdoe])
+'''
+        emailcolumn3 firstcolumn1 lastcolumn2
+1  janedoe@email.com         Jane         Doe
+2  johndoe@email.com         John         Doe
+'''
+print(dataframe.loc[filterdoe, "emailcolumn3"])
+'''
+1    janedoe@email.com
+2    johndoe@email.com
+Name: emailcolumn3, dtype: object
+'''
+filterjohndoe = (dataframe["lastcolumn2"] == "Doe") & (dataframe["firstcolumn1"] == "John")
+print(dataframe.loc[filterjohndoe])
+'''
+        emailcolumn3 firstcolumn1 lastcolumn2
+2  johndoe@email.com         John         Doe
+'''
+print(dataframe.loc[filterjohndoe, "emailcolumn3"])
+'''
+2    johndoe@email.com
+Name: emailcolumn3, dtype: object
+'''
+filterjohnschafer = (dataframe["lastcolumn2"] == "Schafer") | (dataframe["firstcolumn1"] == "John")
+print(dataframe.loc[filterjohnschafer])
+'''
+              emailcolumn3 firstcolumn1 lastcolumn2
+0  coreymschafer@gmail.com        Corey     Schafer
+2        johndoe@email.com         John         Doe
+'''
+print(dataframe.loc[filterjohnschafer, "emailcolumn3"])
+'''
+0    coreymschafer@gmail.com
+2          johndoe@email.com
+Name: emailcolumn3, dtype: object
+'''
+#Use tilda ~ for not
+filternotjohnschafer = (dataframe["lastcolumn2"] == "Schafer") | (dataframe["firstcolumn1"] == "John")
+print(dataframe.loc[~filterjohnschafer, "emailcolumn3"])
+'''
+1    janedoe@email.com
+3                 row3
+Name: emailcolumn3, dtype: object
+'''
+dataframedf = pd.read_csv("developer_survey_2019/survey_results_public.csv", index_col="Respondent")
+readtheschema = pd.read_csv("developer_survey_2019/survey_results_schema.csv", index_col="Column")
+pd.set_option("display.max_columns", 85) #allows number of columns to display horizontally
+pd.set_option("display.max_rows", 85) #allows number of rows to display horizontally
+#print(dataframedf.head())
+highsalary = dataframedf["ConvertedComp"] > 70000
+print(dataframedf.loc[highsalary])
+'''
+ MainBranch Hobbyist  \
+Respondent                                                               
+6           I am not primarily a developer, but I write co...      Yes   
+9                              I am a developer by profession      Yes   
+13                             I am a developer by profession      Yes   
+16                             I am a developer by profession      Yes   
+22                             I am a developer by profession      Yes   
+26                             I am a developer by profession      Yes   
+29                             I am a developer by profession      Yes   
+...
+'''
+print(dataframedf.loc[highsalary, ["Country", "LanguageWorkedWith", "ConvertedComp"]])
+'''
+                 Country                                 LanguageWorkedWith  \
+Respondent                                                                      
+6                   Canada                                         Java;R;SQL   
+9              New Zealand  Bash/Shell/PowerShell;C#;HTML/CSS;JavaScript;P...   
+13           United States  Bash/Shell/PowerShell;HTML/CSS;JavaScript;PHP;...   
+16          United Kingdom  Bash/Shell/PowerShell;C#;HTML/CSS;JavaScript;T...   
+22           United States  Bash/Shell/PowerShell;C++;HTML/CSS;JavaScript;...   
+26           United States  Bash/Shell/PowerShell;C++;C#;HTML/CSS;JavaScri...   
+29           United States               Bash/Shell/PowerShell;JavaScript;SQL 
+...
+'''
+topcountries = ["United States", "India", "United Kingdom", "Germany", "Canada"]
+topcountriesfilter = dataframedf["Country"].isin(topcountries)
+print(dataframedf.loc[topcountriesfilter, ["Country", "LanguageWorkedWith"]])
+'''
+  Country                                 LanguageWorkedWith
+Respondent                                                                   
+1           United Kingdom                    HTML/CSS;Java;JavaScript;Python
+4            United States                                C;C++;C#;Python;SQL
+6                   Canada                                         Java;R;SQL
+8                    India  Bash/Shell/PowerShell;C;C++;HTML/CSS;Java;Java...
+10                   India                      C#;Go;JavaScript;Python;R;SQL
+12                  Canada   Bash/Shell/PowerShell;HTML/CSS;Java;Python;R;SQL
+13           United States  Bash/Shell/PowerShell;HTML/CSS;JavaScript;PHP;...
+14                 Germany                                                C++
+...
+'''
+pythonlanguage = dataframedf["LanguageWorkedWith"].str.contains("Python", na=False) #nulls are excluded
+print(dataframedf.loc[pythonlanguage, ["LanguageWorkedWith", "ConvertedComp"]])
+'''
+  LanguageWorkedWith  ConvertedComp
+Respondent                                                                  
+1                             HTML/CSS;Java;JavaScript;Python            NaN
+2                                         C++;HTML/CSS;Python            NaN
+4                                         C;C++;C#;Python;SQL        61000.0
+5                 C++;HTML/CSS;Java;JavaScript;Python;SQL;VBA            NaN
+8           Bash/Shell/PowerShell;C;C++;HTML/CSS;Java;Java...            NaN
+9           Bash/Shell/PowerShell;C#;HTML/CSS;JavaScript;P...        95179.0
+...
+'''
+
+#Python Pandas Tutorial -Part 5- Updating Rows and Columns - Modifying Data Within DataFrames
+import pandas as pd
+peopledatafreamedictionary = {"firstcolumn1": ["Corey", "Jane", "John", "row1"], "lastcolumn2": ["Schafer", "Doe", "Doe", "row2"], "emailcolumn3": ["coreymschafer@gmail.com", "janedoe@email.com", "johndoe@email.com", "row3"]}
+dataframe = pd.DataFrame(peopledatafreamedictionary)
+print(dataframe)
+'''
+              emailcolumn3 firstcolumn1 lastcolumn2
+0  coreymschafer@gmail.com        Corey     Schafer
+1        janedoe@email.com         Jane         Doe
+2        johndoe@email.com         John         Doe
+3                     row3         row1        row2
+'''
+print(dataframe.columns) #print Index(['emailcolumn3', 'firstcolumn1', 'lastcolumn2'], dtype='object')
+print(type(dataframe.columns)) #print <class 'pandas.core.indexes.base.Index'>
+dataframe.columns = ["email", "firstname", "lastname"]
+print(dataframe)
+'''
+                     email firstname lastname
+0  coreymschafer@gmail.com    Corey  Schafer
+1        janedoe@email.com     Jane      Doe
+2        johndoe@email.com     John      Doe
+3                     row3     row1     row2
+'''
+dataframe.columns = [x.upper() for x in dataframe.columns]
+print(dataframe)
+'''
+                     EMAIL FIRSTNAME LASTNAME
+0  coreymschafer@gmail.com     Corey  Schafer
+1        janedoe@email.com      Jane      Doe
+2        johndoe@email.com      John      Doe
+3                     row3      row1     row2
+'''
+dataframe.columns = dataframe.columns.str.replace(" ", "_") #Replace spaces with underscores
+peopledatafreamedictionary = {"firstcolumn1": ["Corey", "Jane", "John", "row1"], "lastcolumn2": ["Schafer", "Doe", "Doe", "row2"], "emailcolumn3": ["coreymschafer@gmail.com", "janedoe@email.com", "johndoe@email.com", "row3"]}
+dataframe = pd.DataFrame(peopledatafreamedictionary)
+print(dataframe)
+'''
+              emailcolumn3 firstcolumn1 lastcolumn2
+0  coreymschafer@gmail.com        Corey     Schafer
+1        janedoe@email.com         Jane         Doe
+2        johndoe@email.com         John         Doe
+3                     row3         row1        row2
+'''
+dataframe.rename(columns={"firstcolumn1": "newcolumnnamefirst", "lastcolumn2": "newcolumnnamelast"}, inplace=True) #RM:  No need to asssign to a variable.  Immediate update because of inplace?
+print(dataframe)
+'''
+              emailcolumn3 newcolumnnamefirst newcolumnnamelast
+0  coreymschafer@gmail.com              Corey           Schafer
+1        janedoe@email.com               Jane               Doe
+2        johndoe@email.com               John               Doe
+3                     row3               row1              row2
+'''
+print(dataframe.loc[2])
+'''
+emailcolumn3          johndoe@email.com
+newcolumnnamefirst                 John
+newcolumnnamelast                   Doe
+Name: 2, dtype: object
+'''
+dataframe.loc[2] = ["johnsmith@email.com", "John", "Smith"]
+print(dataframe)
+'''
+              emailcolumn3 newcolumnnamefirst newcolumnnamelast
+0  coreymschafer@gmail.com              Corey           Schafer
+1        janedoe@email.com               Jane               Doe
+2      johnsmith@email.com               John             Smith
+3                     row3               row1              row2
+'''
+print(dataframe.loc[2, ["newcolumnnamelast", "emailcolumn3"]])
+'''
+newcolumnnamelast                  Smith
+emailcolumn3         johnsmith@email.com
+Name: 2, dtype: object
+'''
+dataframe.loc[2, ["newcolumnnamelast", "emailcolumn3"]] = ["Doe", "johndoe@email.com"]
+print(dataframe)
+'''
+              emailcolumn3 newcolumnnamefirst newcolumnnamelast
+0  coreymschafer@gmail.com              Corey           Schafer
+1        janedoe@email.com               Jane               Doe
+2        johndoe@email.com               John               Doe
+3                     row3               row1              row2
+'''
+dataframe.loc[2, "newcolumnnamelast"] = "Smith"
+print(dataframe)
+'''
+              emailcolumn3 newcolumnnamefirst newcolumnnamelast
+0  coreymschafer@gmail.com              Corey           Schafer
+1        janedoe@email.com               Jane               Doe
+2        johndoe@email.com               John             Smith
+3                     row3               row1              row2
+'''
+dataframe.at[2, "newcolumnnamelast"] = "Doe"
+print(dataframe)
+'''
+              emailcolumn3 newcolumnnamefirst newcolumnnamelast
+0  coreymschafer@gmail.com              Corey           Schafer
+1        janedoe@email.com               Jane               Doe
+2        johndoe@email.com               John               Doe
+3                     row3               row1              row2
+'''
+filteremailjohndoe = (dataframe["emailcolumn3"] == "johndoe@email.com")
+dataframe.loc[filteremailjohndoe, "newcolumnnamelast"] = "Smith"
+print(dataframe)
+'''
+              emailcolumn3 newcolumnnamefirst newcolumnnamelast
+0  coreymschafer@gmail.com              Corey           Schafer
+1        janedoe@email.com               Jane               Doe
+2        johndoe@email.com               John             Smith
+3                     row3               row1              row2
+'''
+dataframe["emailcolumn3"] = dataframe["emailcolumn3"].str.upper()
+print(dataframe)
+'''
+              emailcolumn3 newcolumnnamefirst newcolumnnamelast
+0  COREYMSCHAFER@GMAIL.COM              Corey           Schafer
+1        JANEDOE@EMAIL.COM               Jane               Doe
+2        JOHNDOE@EMAIL.COM               John             Smith
+3                     ROW3               row1              row2
+'''
+#apply, map, applymap, replace
+print(dataframe["emailcolumn3"].apply(len))
+'''
+0    23
+1    17
+2    17
+3     4
+Name: emailcolumn3, dtype: int64
+'''
+def updatemail(email):
+    return email.lower()
+
+
+dataframe["emailcolumn3"] = dataframe["emailcolumn3"].apply(updatemail)
+#dataframe["emailcolumn3"] = dataframe["emailcolumn3"].apply(lambda x: x.lower())
+print(dataframe)
+'''
+              emailcolumn3 newcolumnnamefirst newcolumnnamelast
+0  coreymschafer@gmail.com              Corey           Schafer
+1        janedoe@email.com               Jane               Doe
+2        johndoe@email.com               John             Smith
+3                     row3               row1              row2
+'''
+print(dataframe.apply(len))
+'''
+emailcolumn3          4
+newcolumnnamefirst    4
+newcolumnnamelast     4
+dtype: int64
+'''
+print(len(dataframe["emailcolumn3"])) #print 4
+print(dataframe.apply(len, axis="columns"))
+'''
+0    3
+1    3
+2    3
+3    3
+dtype: int64
+'''
+print(dataframe.apply(pd.Series.min))
+#print(dataframe.apply(lambda ascendingfirstvalue: ascendingfirstvalue.min()))
+'''
+emailcolumn3          coreymschafer@gmail.com
+newcolumnnamefirst                      Corey
+newcolumnnamelast                         Doe
+dtype: object
+'''
+print(dataframe.applymap(len))
+'''
+   emailcolumn3  newcolumnnamefirst  newcolumnnamelast
+0            23                   5                  7
+1            17                   4                  3
+2            17                   4                  5
+3             4                   4                  4
+'''
+print(dataframe.applymap(str.upper))
+#print(dataframe.applymap(lambda x: x.upper()))
+'''
+              emailcolumn3 newcolumnnamefirst newcolumnnamelast
+0  COREYMSCHAFER@GMAIL.COM              COREY           SCHAFER
+1        JANEDOE@EMAIL.COM               JANE               DOE
+2        JOHNDOE@EMAIL.COM               JOHN             SMITH
+3                     ROW3               ROW1              ROW2
+'''
+#RM:  The previous exercises I used print statements.  The print statements are not permanent changes.  Must assign to dataframe variable.
+firstnamemap = dataframe["newcolumnnamefirst"].map({"Corey": "Chris", "Jane": "Mary"})
+print(firstnamemap)
+'''
+0    Chris
+1     Mary
+2      NaN
+3      NaN
+Name: newcolumnnamefirst, dtype: object
+'''
+print(dataframe)
+'''
+              emailcolumn3 newcolumnnamefirst newcolumnnamelast
+0  coreymschafer@gmail.com              Corey           Schafer
+1        janedoe@email.com               Jane               Doe
+2        johndoe@email.com               John             Smith
+3                     row3               row1              row2
+'''
+firstnamereplace = dataframe["newcolumnnamefirst"].replace({"Corey": "Chris", "Jane": "Mary"})
+print(firstnamereplace)
+'''
+0    Chris
+1     Mary
+2     John
+3     row1
+Name: newcolumnnamefirst, dtype: object
+'''
+print(dataframe)
+'''
+              emailcolumn3 newcolumnnamefirst newcolumnnamelast
+0  coreymschafer@gmail.com              Corey           Schafer
+1        janedoe@email.com               Jane               Doe
+2        johndoe@email.com               John             Smith
+3                     row3               row1              row2
+'''
+dataframe["newcolumnnamefirst"] = dataframe["newcolumnnamefirst"].replace({"Corey": "Chris", "Jane": "Mary"})
+print(dataframe)
+'''
+              emailcolumn3 newcolumnnamefirst newcolumnnamelast
+0  coreymschafer@gmail.com              Chris           Schafer
+1        janedoe@email.com               Mary               Doe
+2        johndoe@email.com               John             Smith
+3                     row3               row1              row2
+'''
+
+dataframedf = pd.read_csv("developer_survey_2019/survey_results_public.csv", index_col="Respondent")
+readtheschema = pd.read_csv("developer_survey_2019/survey_results_schema.csv", index_col="Column")
+pd.set_option("display.max_columns", 85) #allows number of columns to display horizontally
+pd.set_option("display.max_rows", 85) #allows number of rows to display horizontally
+#print(dataframedf.head())
+dataframedf.rename(columns={"ConvertedComp": "SalaryUSD"}, inplace=True)  #RM:  No need to asssign to a variable.  Immediate update because of inplace?
+print(dataframedf["SalaryUSD"])
+'''
+Respondent
+1              NaN
+2              NaN
+3           8820.0
+4          61000.0
+5              NaN
+6         366420.0
+7              NaN
+8              NaN
+9          95179.0
+10         13293.0
+'''
+dataframedf["Hobbyist"].map({"Yes": True, "No": False})
+print(dataframedf["Hobbyist"])
+'''
+Respondent
+1        Yes
+2         No
+3        Yes
+4         No
+5        Yes
+6        Yes
+7         No
+8        Yes
+9        Yes
+10       Yes
+'''
+dataframedf["Hobbyist"] = dataframedf["Hobbyist"].map({"Yes": True, "No": False})
+print(dataframedf["Hobbyist"])
+'''
+Respondent
+1         True
+2        False
+3         True
+4        False
+5         True
+6         True
+7        False
+8         True
+9         True
+10        True
+'''
+dataframedf["Hobbyist"] = dataframedf["Hobbyist"].replace({True: "Yes", False: "No"})
+print(dataframedf["Hobbyist"])
+'''
+Respondent
+1        Yes
+2         No
+3        Yes
+4         No
+5        Yes
+6        Yes
+7         No
+8        Yes
+9        Yes
+10       Yes
+'''
