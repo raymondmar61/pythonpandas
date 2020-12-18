@@ -1206,3 +1206,130 @@ Respondent
 9        Yes
 10       Yes
 '''
+
+#Python Pandas Tutorial -Part 6- AddRemove Rows and Columns From DataFrames
+import pandas as pd
+peopledirtylist = {"first": ["Corey", "Jane", "John"], "last": ["Schafer", "Doe", "Doe"], "email": ["coreymschafer@gmail.com", "janedoe@email.com", "johndoe@email.com"]}
+peopledirtylistdataframe = pd.DataFrame(peopledirtylist)
+print(peopledirtylistdataframe)
+'''
+                     email  first     last
+0  coreymschafer@gmail.com  Corey  Schafer
+1        janedoe@email.com   Jane      Doe
+2        johndoe@email.com   John      Doe
+'''
+print(peopledirtylistdataframe["first"] + " " + peopledirtylistdataframe["last"])
+'''
+0    Corey Schafer
+1         Jane Doe
+2         John Doe
+dtype: object
+'''
+peopledirtylistdataframe["combinecolumnsfirstlast"] = peopledirtylistdataframe["first"] + " " + peopledirtylistdataframe["last"]
+print(peopledirtylistdataframe)
+'''
+                     email  first     last combinecolumnsfirstlast
+0  coreymschafer@gmail.com  Corey  Schafer           Corey Schafer
+1        janedoe@email.com   Jane      Doe                Jane Doe
+2        johndoe@email.com   John      Doe                John Doe
+'''
+peopledirtylistdataframedeletecolumns = peopledirtylistdataframe.drop(columns=["first", "last"], inplace=False)
+print(peopledirtylistdataframedeletecolumns)
+'''
+                     email combinecolumnsfirstlast
+0  coreymschafer@gmail.com           Corey Schafer
+1        janedoe@email.com                Jane Doe
+2        johndoe@email.com                John Doe
+'''
+splitcolumn = peopledirtylistdataframedeletecolumns["combinecolumnsfirstlast"].str.split(" ", expand=False)
+print(splitcolumn)
+'''
+0    [Corey, Schafer]
+1         [Jane, Doe]
+2         [John, Doe]
+Name: combinecolumnsfirstlast, dtype: object
+'''
+splitcolumn = peopledirtylistdataframedeletecolumns["combinecolumnsfirstlast"].str.split(" ", expand=True)
+print(splitcolumn)
+'''
+       0        1
+0  Corey  Schafer
+1   Jane      Doe
+2   John      Doe
+'''
+peopledirtylistdataframedeletecolumns[["splitcolumnheader1", "splitcolumnheader2"]] = peopledirtylistdataframedeletecolumns["combinecolumnsfirstlast"].str.split(" ", expand=True)
+print(peopledirtylistdataframedeletecolumns)
+'''
+                     email combinecolumnsfirstlast splitcolumnheader1  \
+0  coreymschafer@gmail.com           Corey Schafer              Corey   
+1        janedoe@email.com                Jane Doe               Jane   
+2        johndoe@email.com                John Doe               John   
+
+  splitcolumnheader2  
+0            Schafer  
+1                Doe  
+2                Doe
+'''
+peopledirtylistdataframeaddrow = peopledirtylistdataframedeletecolumns.append({"splitcolumnheader1": "Tony"}, ignore_index=True)
+print(peopledirtylistdataframeaddrow)
+'''
+                     email combinecolumnsfirstlast splitcolumnheader1  \
+0  coreymschafer@gmail.com           Corey Schafer              Corey   
+1        janedoe@email.com                Jane Doe               Jane   
+2        johndoe@email.com                John Doe               John   
+3                      NaN                     NaN               Tony   
+
+  splitcolumnheader2  
+0            Schafer  
+1                Doe  
+2                Doe  
+'''
+avergerslist = {"first": ["Tony", "Steve", "Bruce"], "last": ["Stark", "Rogers", "Banner"], "email": ["ironman@avenge.com", "cap@avenge.com", "hulk@avenge.com"]}
+avengersdataframe = pd.DataFrame(avergerslist)
+print(avengersdataframe)
+'''
+                email  first    last
+0  ironman@avenge.com   Tony   Stark
+1      cap@avenge.com  Steve  Rogers
+2     hulk@avenge.com  Bruce  Banner
+'''
+combineddataframes = peopledirtylistdataframe.append(avengersdataframe, ignore_index=True)
+print(combineddataframes)
+'''
+  combinecolumnsfirstlast                    email  first     last
+0           Corey Schafer  coreymschafer@gmail.com  Corey  Schafer
+1                Jane Doe        janedoe@email.com   Jane      Doe
+2                John Doe        johndoe@email.com   John      Doe
+3                     NaN       ironman@avenge.com   Tony    Stark
+4                     NaN           cap@avenge.com  Steve   Rogers
+5                     NaN          hulk@avenge.com  Bruce   Banner
+'''
+dropsteverogers = combineddataframes.drop(index=4)
+print(dropsteverogers)
+'''
+  combinecolumnsfirstlast                    email  first     last
+0           Corey Schafer  coreymschafer@gmail.com  Corey  Schafer
+1                Jane Doe        janedoe@email.com   Jane      Doe
+2                John Doe        johndoe@email.com   John      Doe
+3                     NaN       ironman@avenge.com   Tony    Stark
+5                     NaN          hulk@avenge.com  Bruce   Banner
+'''
+dropdoes = dropsteverogers.drop(index=dropsteverogers[dropsteverogers["last"] == "Doe"].index)
+print(dropdoes)
+'''
+  combinecolumnsfirstlast                    email  first     last
+0           Corey Schafer  coreymschafer@gmail.com  Corey  Schafer
+3                     NaN       ironman@avenge.com   Tony    Stark
+5                     NaN          hulk@avenge.com  Bruce   Banner
+'''
+#or
+dropdoesvariable = dropsteverogers["last"] == "Doe"
+dropdoes = dropsteverogers.drop(index=dropsteverogers[dropdoesvariable].index)
+print(dropdoes)
+
+'''
+  combinecolumnsfirstlast                    email  first     last
+0           Corey Schafer  coreymschafer@gmail.com  Corey  Schafer
+3                     NaN       ironman@avenge.com   Tony    Stark
+5                     NaN          hulk@avenge.com  Bruce   Banner
+'''
