@@ -1333,3 +1333,162 @@ print(dropdoes)
 3                     NaN       ironman@avenge.com   Tony    Stark
 5                     NaN          hulk@avenge.com  Bruce   Banner
 '''
+
+#Python Pandas Tutorial -Part 7- Sorting Data
+peopledatafreamedictionary = {"firstcolumn1": ["Corey", "Jane", "John", "row1", "Adam"], "lastcolumn2": ["Shafer", "Doe", "Doe", "row2", "Doe"], "emailcolumn3": ["coreymschafer@gmail.com", "janedoe@email.com", "johndoe@email.com", "row3", "a@email.com"]}
+dataframe = pd.DataFrame(peopledatafreamedictionary)
+print(dataframe)
+'''
+              emailcolumn3 firstcolumn1 lastcolumn2
+0  coreymschafer@gmail.com        Corey      Shafer
+1        janedoe@email.com         Jane         Doe
+2        johndoe@email.com         John         Doe
+3                     row3         row1        row2
+4              a@email.com         Adam         Doe
+'''
+sortlastcolumn = dataframe.sort_values(by="lastcolumn2", ascending=True)
+print(sortlastcolumn)
+'''
+              emailcolumn3 firstcolumn1 lastcolumn2
+1        janedoe@email.com         Jane         Doe
+2        johndoe@email.com         John         Doe
+4              a@email.com         Adam         Doe
+0  coreymschafer@gmail.com        Corey      Shafer
+3                     row3         row1        row2
+'''
+sortlastfirstcolumn = dataframe.sort_values(by=["lastcolumn2", "firstcolumn1"], ascending=True)
+print(sortlastfirstcolumn)
+'''
+              emailcolumn3 firstcolumn1 lastcolumn2
+4              a@email.com         Adam         Doe
+1        janedoe@email.com         Jane         Doe
+2        johndoe@email.com         John         Doe
+0  coreymschafer@gmail.com        Corey      Shafer
+3                     row3         row1        row2
+'''
+sortlastfirstcolumn = dataframe.sort_values(by=["lastcolumn2", "firstcolumn1"], ascending=[False, True])
+print(sortlastfirstcolumn)
+'''
+              emailcolumn3 firstcolumn1 lastcolumn2
+3                     row3         row1        row2
+0  coreymschafer@gmail.com        Corey      Shafer
+4              a@email.com         Adam         Doe
+1        janedoe@email.com         Jane         Doe
+2        johndoe@email.com         John         Doe
+'''
+sortlastfirstcolumninplace = dataframe.sort_values(by=["lastcolumn2", "firstcolumn1"], ascending=[False, True], inplace=True)
+print(sortlastfirstcolumninplace) #print None
+print(sortlastfirstcolumn.sort_index()) #Sort the data by index number
+'''
+              emailcolumn3 firstcolumn1 lastcolumn2
+0  coreymschafer@gmail.com        Corey      Shafer
+1        janedoe@email.com         Jane         Doe
+2        johndoe@email.com         John         Doe
+3                     row3         row1        row2
+4              a@email.com         Adam         Doe
+'''
+displaylastnamecolumn = dataframe["lastcolumn2"].sort_values()
+print(displaylastnamecolumn)
+'''
+4       Doe
+1       Doe
+2       Doe
+0    Shafer
+3      row2
+Name: lastcolumn2, dtype: object
+'''
+dataframedf = pd.read_csv("developer_survey_2019/survey_results_public.csv")
+readtheschema = pd.read_csv("developer_survey_2019/survey_results_schema.csv")
+pd.set_option("display.max_columns", 85) #allows number of columns to display horizontally
+pd.set_option("display.max_rows", 85) #allows number of rows to display horizontally
+#print(dataframedf.head())
+dataframedf.sort_values(by=["Country"], inplace=True)
+print(dataframedf["Country"].head(50))
+'''
+39018    Afghanistan
+62723    Afghanistan
+85185    Afghanistan
+...
+41344        Albania
+33177        Albania
+6688         Albania
+Name: Country, dtype: object
+'''
+dataframedf.sort_values(by=["Country", "ConvertedComp"], inplace=True)
+print(dataframedf[["Country", "ConvertedComp"]].head(50))
+'''
+          Country  ConvertedComp
+28470  Afghanistan            0.0
+719    Afghanistan            0.0
+29560  Afghanistan         1116.0
+8112   Afghanistan         1596.0
+10697  Afghanistan         3996.0
+48122  Afghanistan         4464.0
+22327  Afghanistan         7980.0
+7056   Afghanistan        14364.0
+58082  Afghanistan        17556.0
+39018  Afghanistan        19152.0
+50172  Afghanistan       153216.0
+62723  Afghanistan      1000000.0
+85185  Afghanistan            NaN
+50437  Afghanistan            NaN
+...
+25440      Albania         4416.0
+78326      Albania         4968.0
+33999      Albania         5496.0
+'''
+dataframedf.sort_values(by=["Country", "ConvertedComp"], ascending=[True, False], inplace=True)
+print(dataframedf[["Country", "ConvertedComp"]].head(50))
+'''
+ Country  ConvertedComp
+62723  Afghanistan      1000000.0
+50172  Afghanistan       153216.0
+39018  Afghanistan        19152.0
+58082  Afghanistan        17556.0
+7056   Afghanistan        14364.0
+22327  Afghanistan         7980.0
+48122  Afghanistan         4464.0
+10697  Afghanistan         3996.0
+8112   Afghanistan         1596.0
+29560  Afghanistan         1116.0
+28470  Afghanistan            0.0
+719    Afghanistan            0.0
+85185  Afghanistan            NaN
+...
+38075      Albania       187668.0
+3771       Albania       114550.0
+9230       Albania        74474.0
+6688       Albania        60000.0
+10257      Albania        57300.0
+65859      Albania        41244.0
+'''
+toptensalaries = dataframedf["ConvertedComp"].nlargest(10)
+print(toptensalaries)
+'''
+25833    2000000.0
+87353    2000000.0
+21895    2000000.0
+28080    2000000.0
+72274    2000000.0
+77665    2000000.0
+79701    2000000.0
+51798    2000000.0
+75088    2000000.0
+32056    2000000.0
+Name: ConvertedComp, dtype: float64
+'''
+toptensalariesallcolumns = dataframedf.nlargest(10, "ConvertedComp") #use nsmallest for the bottom ten salaries
+print(toptensalariesallcolumns)
+'''
+ Respondent                                         MainBranch Hobbyist  \
+25833       25983                     I am a developer by profession      Yes   
+87353       87896                     I am a developer by profession      Yes   
+21895       22013                     I am a developer by profession      Yes   
+28080       28243                     I am a developer by profession      Yes   
+72274       72732  I am not primarily a developer, but I write co...       No   
+77665       78151                     I am a developer by profession      Yes   
+79701       80200                     I am a developer by profession      Yes   
+51798       52132                     I am a developer by profession      Yes   
+75088       75561                     I am a developer by profession      Yes   
+32056       32250                     I am a developer by profession      Yes   
+'''
