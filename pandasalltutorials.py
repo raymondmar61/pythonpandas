@@ -1,5 +1,4 @@
 import pandas as pd
-#check
 
 #Complete Python Pandas Data Science Tutorial- -Reading CSVExcel files- Sorting- Filtering- Groupby-.mp4
 dataframecsv = pd.read_csv("pokemon_data.csv")
@@ -1043,7 +1042,7 @@ print(dataframe["emailcolumn3"].apply(len))
 Name: emailcolumn3, dtype: int64
 '''
 def updatemail(email):
-    return email.lower()
+  return email.lower()
 
 
 dataframe["emailcolumn3"] = dataframe["emailcolumn3"].apply(updatemail)
@@ -1493,3 +1492,587 @@ print(toptensalariesallcolumns)
 75088       75561                     I am a developer by profession      Yes   
 32056       32250                     I am a developer by profession      Yes   
 '''
+
+#Python Pandas Tutorial -Part 8- Grouping and Aggregating - Analyzing and Exploring Your Data
+import pandas as pd
+
+dataframedf = pd.read_csv("developer_survey_2019/survey_results_public.csv")
+readtheschema = pd.read_csv("developer_survey_2019/survey_results_schema.csv")
+# pd.set_option("display.max_columns", 85) #allows number of columns to display horizontally
+# pd.set_option("display.max_rows", 85) #allows number of rows to display horizontally
+# print(dataframedf.head())
+
+#ConvertedComp is salary
+print(dataframedf["ConvertedComp"].head(15)) #print the first 15 ConvertedComp salary or data points
+print(dataframedf["ConvertedComp"].median()) #print 57287.0.  Ignores NaN values.
+print(dataframedf.median()) #print all column headers which can calculate a median value
+'''
+Respondent       44442.0
+CompTotal        62000.0
+ConvertedComp    57287.0
+WorkWeekHrs         40.0
+CodeRevHrs           4.0
+Age                 29.0
+dtype: float64
+'''
+print(dataframedf.describe()) #RM:  instructor says a positive e for exponent means move the decimal right a number space.  Count counts non NaN rows.
+'''
+         Respondent     CompTotal  ConvertedComp   WorkWeekHrs    CodeRevHrs  \
+count  88883.000000  5.594500e+04   5.582300e+04  64503.000000  49790.000000   
+mean   44442.000000  5.519014e+11   1.271107e+05     42.127197      5.084308   
+std    25658.456325  7.331926e+13   2.841523e+05     37.287610      5.513931   
+min        1.000000  0.000000e+00   0.000000e+00      1.000000      0.000000   
+25%    22221.500000  2.000000e+04   2.577750e+04     40.000000      2.000000   
+50%    44442.000000  6.200000e+04   5.728700e+04     40.000000      4.000000   
+75%    66662.500000  1.200000e+05   1.000000e+05     44.750000      6.000000   
+max    88883.000000  1.000000e+16   2.000000e+06   4850.000000     99.000000   
+
+                Age  
+count  79210.000000  
+mean      30.336699  
+std        9.178390  
+min        1.000000  
+25%       24.000000  
+50%       29.000000  
+75%       35.000000  
+max       99.000000  
+'''
+print(dataframedf["ConvertedComp"].count()) #print 55823
+print(dataframedf["Hobbyist"].value_counts())
+'''
+Yes    71257
+No     17626
+Name: Hobbyist, dtype: int64
+'''
+print(dataframedf["SocialMedia"].value_counts())
+'''
+Reddit                      14374
+YouTube                     13830
+WhatsApp                    13347
+Facebook                    13178
+Twitter                     11398
+Instagram                    6261
+I don't use social media     5554
+LinkedIn                     4501
+WeChat 微信                     667
+Snapchat                      628
+VK ВКонта́кте                 603
+Weibo 新浪微博                     56
+Youku Tudou 优酷                 21
+Hello                          19
+Name: SocialMedia, dtype: int64
+'''
+print(dataframedf["SocialMedia"].value_counts(normalize=True))  #RM:  Show values as a percentage of total
+'''
+Reddit                      0.170233
+YouTube                     0.163791
+WhatsApp                    0.158071
+Facebook                    0.156069
+Twitter                     0.134988
+Instagram                   0.074150
+I don't use social media    0.065777
+LinkedIn                    0.053306
+WeChat 微信                   0.007899
+Snapchat                    0.007437
+VK ВКонта́кте               0.007141
+Weibo 新浪微博                  0.000663
+Youku Tudou 优酷              0.000249
+Hello                       0.000225
+Name: SocialMedia, dtype: float64
+'''
+print(dataframedf["Country"].value_counts())
+'''
+United States                            20949
+India                                     9061
+Germany                                   5866
+United Kingdom                            5737
+Canada                                    3395
+France                                    2391
+Brazil                                    1948
+Poland                                    1922
+Australia                                 1903
+...
+Dominica                                     1
+Chad                                         1
+Tonga                                        1
+Name: Country, Length: 179, dtype: int64
+'''
+#group dataframedf["Country"].value_counts() by country
+print(dataframedf.groupby(["Country"])) #print <pandas.core.groupby.DataFrameGroupBy object at 0x7f32a9ed3d68>
+countrygroup = dataframedf.groupby(["Country"])
+print(countrygroup.get_group("United States")) #print rows where Country is United States
+'''
+  Respondent                                         MainBranch Hobbyist  \
+3               4                     I am a developer by profession       No   
+12             13                     I am a developer by profession      Yes   
+21             22                     I am a developer by profession      Yes   
+22             23                     I am a developer by profession      Yes   
+...
+'''
+filtercountry = dataframedf["Country"] == "United States"
+print(dataframedf.loc[filtercountry])
+'''
+  Respondent                                         MainBranch Hobbyist  \
+3               4                     I am a developer by profession       No   
+12             13                     I am a developer by profession      Yes   
+21             22                     I am a developer by profession      Yes   
+22             23                     I am a developer by profession      Yes   
+...
+'''
+print(dataframedf.loc[filtercountry]["SocialMedia"].value_counts()) #print Social Media counts in United States from filtercountry variable
+'''
+Reddit                      5700
+Twitter                     3468
+Facebook                    2844
+YouTube                     2463
+I don't use social media    1851
+Instagram                   1652
+LinkedIn                    1020
+WhatsApp                     609
+Snapchat                     326
+WeChat 微信                     93
+VK ВКонта́кте                  9
+Weibo 新浪微博                     8
+Hello                          2
+Youku Tudou 优酷                 1
+Name: SocialMedia, dtype: int64
+'''
+print(countrygroup["SocialMedia"].value_counts()) #print Social Media column counts by Country from countrygroup variable
+'''
+Country                               SocialMedia             
+Afghanistan                           Facebook                     15
+                                      YouTube                       9
+                                      I don't use social media      6
+                                      WhatsApp                      4
+                                      Instagram                     1
+                                      LinkedIn                      1
+                                      Twitter                       1
+                                                                 ... 
+Zimbabwe                              WhatsApp                     20
+                                      Twitter                       8
+                                      Facebook                      3
+                                      YouTube                       3
+                                      Instagram                     2
+                                      LinkedIn                      2
+                                      Reddit                        1
+Name: SocialMedia, Length: 1220, dtype: int64
+'''
+print(countrygroup["SocialMedia"].value_counts().head(21)) #print first 21 rows Social Media column counts by Country from countrygroup variable
+'''
+Country      SocialMedia             
+Afghanistan  Facebook                    15
+             YouTube                      9
+             I don't use social media     6
+             WhatsApp                     4
+             Instagram                    1
+             LinkedIn                     1
+             Twitter                      1
+Albania      WhatsApp                    18
+             Facebook                    16
+             Instagram                   13
+             YouTube                     10
+             Twitter                      8
+             LinkedIn                     7
+             Reddit                       6
+             I don't use social media     4
+             Snapchat                     1
+             WeChat 微信                    1
+Algeria      YouTube                     42
+             Facebook                    41
+             Twitter                     14
+             LinkedIn                     9
+Name: SocialMedia, dtype: int64
+'''
+print(countrygroup["SocialMedia"].value_counts().loc["United States"]) #print Social Media column counts United States
+'''
+SocialMedia
+Reddit                      5700
+Twitter                     3468
+Facebook                    2844
+YouTube                     2463
+I don't use social media    1851
+Instagram                   1652
+LinkedIn                    1020
+WhatsApp                     609
+Snapchat                     326
+WeChat 微信                     93
+VK ВКонта́кте                  9
+Weibo 新浪微博                     8
+Hello                          2
+Youku Tudou 优酷                 1
+Name: SocialMedia, dtype: int64
+'''
+print(countrygroup["SocialMedia"].value_counts(normalize=True).loc["United States"]) #print Social Media column percentages United States
+'''
+SocialMedia
+Reddit                      0.284346
+Twitter                     0.173002
+Facebook                    0.141874
+YouTube                     0.122867
+I don't use social media    0.092338
+Instagram                   0.082410
+LinkedIn                    0.050883
+WhatsApp                    0.030380
+Snapchat                    0.016263
+WeChat 微信                   0.004639
+VK ВКонта́кте               0.000449
+Weibo 新浪微博                  0.000399
+Hello                       0.000100
+Youku Tudou 优酷              0.000050
+Name: SocialMedia, dtype: float64
+'''
+print(countrygroup["ConvertedComp"].median()) #print median salary by countrygroup variable defined countrygroup = dataframedf.groupby(["Country"])
+'''
+Country
+Afghanistan                                    6222.0
+Albania                                       10818.0
+Algeria                                        7878.0
+                                               ...   
+Yemen                                         11940.0
+Zambia                                         5040.0
+Zimbabwe                                      19200.0
+Name: ConvertedComp, Length: 179, dtype: float64
+'''
+print(countrygroup["ConvertedComp"].median().loc["Germany"]) #print median salary Germany countrygroup variable defined countrygroup = dataframedf.groupby(["Country"])
+'''
+63016.0
+'''
+print(countrygroup["ConvertedComp"].agg(["median", "mean"]))
+'''
+                                             median           mean
+Country                                                           
+Afghanistan                                  6222.0  101953.333333
+Albania                                     10818.0   21833.700000
+Algeria                                      7878.0   34924.047619
+...                                             ...            ...
+Yemen                                       11940.0   16909.166667
+Zambia                                       5040.0   10075.375000
+Zimbabwe                                    19200.0   34046.666667
+
+[179 rows x 2 columns]
+'''
+print(countrygroup["ConvertedComp"].agg(["median", "mean"]).loc["Canada"])
+'''
+median     68705.000000
+mean      134018.564909
+Name: Canada, dtype: float64
+'''
+filtercountry = dataframedf["Country"] == "United States"
+print(dataframedf.loc[filtercountry]["LanguageWorkedWith"]) #print United States column LanguageWorkedWith
+'''
+3                                      C;C++;C#;Python;SQL
+12       Bash/Shell/PowerShell;HTML/CSS;JavaScript;PHP;...
+21       Bash/Shell/PowerShell;C++;HTML/CSS;JavaScript;...
+22       Bash/Shell/PowerShell;HTML/CSS;JavaScript;Pyth...
+25       Bash/Shell/PowerShell;C++;C#;HTML/CSS;JavaScri...
+...
+88877    Bash/Shell/PowerShell;Go;HTML/CSS;JavaScript;W...
+Name: LanguageWorkedWith, Length: 20949, dtype: object
+'''
+print(dataframedf.loc[filtercountry]["LanguageWorkedWith"].str.contains("Python")) #print United States column LanguageWorkedWith is Python
+'''
+3         True
+12       False
+21        True
+22        True
+25        True
+...
+88877    False
+Name: LanguageWorkedWith, Length: 20949, dtype: object
+'''
+print(dataframedf.loc[filtercountry]["LanguageWorkedWith"].str.contains("Python").sum()) #print United States column how mnay LanguageWorkedWith is Python
+'''
+10083
+'''
+print(countrygroup["LanguageWorkedWith"].apply(lambda x: x.str.contains("Python").sum())) #print count by country how mnay LanguageWorkedWith is Python
+'''
+Country
+Afghanistan                                      8
+                                             ...  
+United States                                10083
+Uruguay                                         36
+Uzbekistan                                      14
+Venezuela, Bolivarian Republic of...            28
+Viet Nam                                        78
+Yemen                                            3
+Zambia                                           4
+Zimbabwe                                        14
+Name: LanguageWorkedWith, Length: 179, dtype: int64
+'''
+countryrespondents = dataframedf["Country"].value_counts()
+print(countryrespondents)
+'''
+United States                       20949
+India                                9061
+Germany                              5866
+                                    ...  
+Papua New Guinea                        1
+North Korea                             1
+Tonga                                   1
+Name: Country, Length: 179, dtype: int64
+'''
+countryusespython = countrygroup["LanguageWorkedWith"].apply(lambda x: x.str.contains("Python").sum())
+print(countryusespython)
+'''
+Country
+Afghanistan                                      8
+Albania                                         23
+Algeria                                         40
+                                             ...  
+Yemen                                            3
+Zambia                                           4
+Zimbabwe                                        14
+Name: LanguageWorkedWith, Length: 179, dtype: int64
+'''
+pythondataframe = pd.concat([countryrespondents, countryusespython], axis="columns") #video included sort=False.  I got an error message.  Exclude sort=False
+print(pythondataframe)
+'''
+ Country  LanguageWorkedWith
+Afghanistan                                     44                   8
+Albania                                         86                  23
+Algeria                                        134                  40
+...                                            ...                 ...
+Yemen                                           19                   3
+Zambia                                          12                   4
+Zimbabwe                                        39                  14
+[179 rows x 2 columns]
+'''
+print(pythondataframe.rename(columns={"Country": "Rename Number Of Respondents", "LanguageWorkedWith": "Rename Number Knows Python"}))
+'''
+                                      Rename Number Of Respondents  \
+Afghanistan                                                           44   
+Albania                                                               86   
+Algeria                                                              134   
+                                           Rename Number Knows Python  
+Afghanistan                                                         8  
+Albania                                                            23  
+Algeria                                                            40  
+[179 rows x 2 columns]
+'''
+pythondataframerenamecolumns = pythondataframe.rename(columns={"Country": "Rename Number Of Respondents", "LanguageWorkedWith": "Rename Number Knows Python"}, inplace=True) #inplace=True supposed to make rename columns permanent.  RM:  it didn't work.  I'm not sure inplace=True works in a print statement print(pythondataframe.rename(columns={"Country": "Rename Number Of Respondents", "LanguageWorkedWith": "Rename Number Knows Python"}))
+print(pythondataframerenamecolumns) #print None
+pythondataframe["New Column Percentage Knows Python"] = (pythondataframe["Rename Number Knows Python"] / pythondataframe["Rename Number Of Respondents"]) * 100
+print(pythondataframerenamecolumns) #print None
+#RM:  Reset exercise include a third column to calculate percentage by country how many know Python
+countryrespondents = dataframedf["Country"].value_counts()
+countryusespython = countrygroup["LanguageWorkedWith"].apply(lambda x: x.str.contains("Python").sum())
+pythondataframe = pd.concat([countryrespondents, countryusespython], axis="columns") #video included sort=False.  I got an error message.  Exclude sort=False
+pythondataframe["New Column Percentage Knows Python"] = (pythondataframe["LanguageWorkedWith"] / pythondataframe["Country"]) * 100
+print(pythondataframe)
+'''
+Country  LanguageWorkedWith  \
+Afghanistan                                     44                   8   
+Albania                                         86                  23   
+Algeria                                        134                  40   
+                                           New Column Percentage Knows Python  
+Afghanistan                                                         18.181818  
+Albania                                                             26.744186  
+Algeria                                                             29.850746  
+[179 rows x 3 columns]
+'''
+print(pythondataframe.sort_values(by="New Column Percentage Knows Python", ascending=False))  #Sort by New Column Percentage Knows Python percentage highest to lowest
+print(pythondataframe.sort_values(by="New Column Percentage Knows Python", ascending=False, inplace=True)) #inplace=True supposed to permanently modify the dataframe pythondataframe.  print None.  Didn't work.
+pythondataframeinplacetrue = pythondataframe.sort_values(by="New Column Percentage Knows Python", ascending=False, inplace=True) #try assign a new variable
+print(pythondataframeinplacetrue) #RM:  I didn't verify assign a new variable works
+print(pythondataframe.sort_values(by="New Column Percentage Knows Python", ascending=False).loc["Japan"])
+'''
+Country                               391.000000
+LanguageWorkedWith                    182.000000
+New Column Percentage Knows Python     46.547315
+Name: Japan, dtype: float64
+'''
+
+#Python Pandas Tutorial -Part 9- Cleaning Data - Casting Datatypes and Handling Missing Values
+import pandas as pd
+import numpy as np
+
+people = {"first": ["Corey", "Jane", "John", "Chirs", np.nan, None, "NA"], "last": ["Schafer", "Doe", "Doe", "Schafer", np.nan, np.nan, "Missing"], "email": ["CoreyMSchafer@gmail.com", "Jane.Doe@email.com", "JohnDoe@email.com", None, np.nan, "Anonymous@email.com", "NA"], "age": ["33", "55", "63", "36", None, None, "Missing"]}
+peopledataframe = pd.DataFrame(people)
+print(peopledataframe)
+'''
+       age                    email  first     last
+0       33  CoreyMSchafer@gmail.com  Corey  Schafer
+1       55       Jane.Doe@email.com   Jane      Doe
+2       63        JohnDoe@email.com   John      Doe
+3       36                     None  Chirs  Schafer
+4     None                      NaN    NaN      NaN
+5     None      Anonymous@email.com   None      NaN
+6  Missing                       NA     NA  Missing
+'''
+peopledataframedropna = peopledataframe.dropna() #remove rows with np.nan or NaN
+print(peopledataframedropna)
+'''
+       age                    email  first     last
+0       33  CoreyMSchafer@gmail.com  Corey  Schafer
+1       55       Jane.Doe@email.com   Jane      Doe
+2       63        JohnDoe@email.com   John      Doe
+6  Missing                       NA     NA  Missing
+'''
+peopledataframedropna = peopledataframe.dropna(axis="index", how="any") #default dropna
+print(peopledataframedropna)
+'''
+       age                    email  first     last
+0       33  CoreyMSchafer@gmail.com  Corey  Schafer
+1       55       Jane.Doe@email.com   Jane      Doe
+2       63        JohnDoe@email.com   John      Doe
+6  Missing                       NA     NA  Missing
+'''
+peopledataframedeleteentirerowNaN = peopledataframe.dropna(axis="index", how="all") #delete entire row with NaN or None
+print(peopledataframedeleteentirerowNaN)
+'''
+       age                    email  first     last
+0       33  CoreyMSchafer@gmail.com  Corey  Schafer
+1       55       Jane.Doe@email.com   Jane      Doe
+2       63        JohnDoe@email.com   John      Doe
+3       36                     None  Chirs  Schafer
+5     None      Anonymous@email.com   None      NaN
+6  Missing                       NA     NA  Missing
+'''
+peopledataframedeleteentirecolumn = peopledataframe.dropna(axis="columns", how="all") #delete entire column with NaN or None
+print(peopledataframedeleteentirecolumn)
+'''
+       age                    email  first     last
+0       33  CoreyMSchafer@gmail.com  Corey  Schafer
+1       55       Jane.Doe@email.com   Jane      Doe
+2       63        JohnDoe@email.com   John      Doe
+3       36                     None  Chirs  Schafer
+4     None                      NaN    NaN      NaN
+5     None      Anonymous@email.com   None      NaN
+6  Missing                       NA     NA  Missing
+'''
+peopledataframedropna = peopledataframe.dropna(axis="index", how="any", subset=["email"]) #remove rows with NaN or None in email column
+print(peopledataframedropna)
+'''
+       age                    email  first     last
+0       33  CoreyMSchafer@gmail.com  Corey  Schafer
+1       55       Jane.Doe@email.com   Jane      Doe
+2       63        JohnDoe@email.com   John      Doe
+5     None      Anonymous@email.com   None      NaN
+6  Missing                       NA     NA  Missing
+'''
+peopledataframe.replace("NA", np.nan, inplace=True) #inplace=True makes replace permanent
+peopledataframe.replace("Missing", np.nan, inplace=True) #inplace=True makes replace permanent
+print(peopledataframe)
+'''
+    age                    email  first     last
+0    33  CoreyMSchafer@gmail.com  Corey  Schafer
+1    55       Jane.Doe@email.com   Jane      Doe
+2    63        JohnDoe@email.com   John      Doe
+3    36                     None  Chirs  Schafer
+4  None                      NaN    NaN      NaN
+5  None      Anonymous@email.com   None      NaN
+6   NaN                      NaN    NaN      NaN
+'''
+print(peopledataframe.dropna())
+'''
+  age                    email  first     last
+0  33  CoreyMSchafer@gmail.com  Corey  Schafer
+1  55       Jane.Doe@email.com   Jane      Doe
+2  63        JohnDoe@email.com   John      Doe
+'''
+peopledataframedropna = peopledataframe.dropna(axis="index", how="all", subset=["email", "last"])
+print(peopledataframedropna)
+'''
+    age                    email  first     last
+0    33  CoreyMSchafer@gmail.com  Corey  Schafer
+1    55       Jane.Doe@email.com   Jane      Doe
+2    63        JohnDoe@email.com   John      Doe
+3    36                     None  Chirs  Schafer
+5  None      Anonymous@email.com   None      NaN
+'''
+print(peopledataframe.isna())
+'''
+     age  email  first   last
+0  False  False  False  False
+1  False  False  False  False
+2  False  False  False  False
+3  False   True  False  False
+4   True   True   True   True
+5   True  False   True   True
+6   True   True   True   True
+'''
+print(peopledataframe.fillna("Replace NA Values With MISSING"))
+'''
+                              age                           email  \
+0                              33         CoreyMSchafer@gmail.com   
+1                              55              Jane.Doe@email.com   
+2                              63               JohnDoe@email.com   
+3                              36  Replace NA Values With MISSING   
+4  Replace NA Values With MISSING  Replace NA Values With MISSING   
+5  Replace NA Values With MISSING             Anonymous@email.com   
+6  Replace NA Values With MISSING  Replace NA Values With MISSING   
+
+                            first                            last  
+0                           Corey                         Schafer  
+1                            Jane                             Doe  
+2                            John                             Doe  
+3                           Chirs                         Schafer  
+4  Replace NA Values With MISSING  Replace NA Values With MISSING  
+5  Replace NA Values With MISSING  Replace NA Values With MISSING  
+6  Replace NA Values With MISSING  Replace NA Values With MISSING  
+'''
+print(peopledataframe.dtypes)
+'''
+age      object
+email    object
+first    object
+last     object
+dtype: object
+'''
+#print(peopledataframe["age"].mean()) #error message TypeError: must be str, not int
+print(type(np.nan)) #print <class 'float'>
+#peopledataframe["age"] = peopledataframe["age"].astype(int) #error message int() argument must be a string, a bytes-like object or a number, not 'NoneType'
+peopledataframe["age"] = peopledataframe["age"].astype(float)
+print(peopledataframe.dtypes)
+'''
+age      float64
+email     object
+first     object
+last      object
+dtype: object
+'''
+print(peopledataframe["age"].mean()) #print 46.75
+
+replacevalueswithnan = ["NA", "Missing"] #NA and Missing are replaced with NaN
+dataframedf = pd.read_csv("developer_survey_2019/survey_results_public.csv", index_col="Respondent", na_values=replacevalueswithnan)
+readtheschema = pd.read_csv("developer_survey_2019/survey_results_schema.csv", index_col="Column")
+pd.set_option("display.max_columns", 85) #allows number of columns to display horizontally
+pd.set_option("display.max_rows", 85) #allows number of rows to display horizontally
+print(dataframedf["YearsCode"].head(10))
+'''
+Respondent
+1       4
+2     NaN
+3       3
+4       3
+5      16
+6      13
+7       6
+8       8
+9      12
+10     12
+Name: YearsCode, dtype: object
+'''
+#print(dataframedf["YearsCode"].mean()) #print TypeError: must be str, not int  Reason is NaN is a float type float.  Solution convert YearsCode column to float.
+#dataframedf["YearsCode"] = dataframedf["YearsCode"].astype(float)
+#print(dataframedf["YearsCode"].mean()) #print ValueError: could not convert string to float: 'Less than 1 year'
+print(dataframedf["YearsCode"].unique()) #print unique values or distinct values
+'''
+Name: YearsCode, dtype: object
+['4' nan '3' '16' '13' '6' '8' '12' '2' '5' '17' '10' '14' '35' '7'
+ 'Less than 1 year' '30' '9' '26' '40' '19' '15' '20' '28' '25' '1' '22'
+ '11' '33' '50' '41' '18' '34' '24' '23' '42' '27' '21' '36' '32' '39'
+ '38' '31' '37' 'More than 50 years' '29' '44' '45' '48' '46' '43' '47'
+ '49']
+'''
+dataframedf["YearsCode"].replace("Less than 1 year", 0, inplace=True) #inplace=True required to make it permanent
+dataframedf["YearsCode"].replace("More than 50 years", 51, inplace=True) #inplace=True required to make it permanent
+dataframedf["YearsCode"] = dataframedf["YearsCode"].astype(float)
+print(dataframedf["YearsCode"].unique())
+'''
+[ 4. nan  3. 16. 13.  6.  8. 12.  2.  5. 17. 10. 14. 35.  7.  0. 30.  9.
+ 26. 40. 19. 15. 20. 28. 25.  1. 22. 11. 33. 50. 41. 18. 34. 24. 23. 42.
+ 27. 21. 36. 32. 39. 38. 31. 37. 51. 29. 44. 45. 48. 46. 43. 47. 49.]
+'''
+print(dataframedf["YearsCode"].mean()) #print 11.662114216834588
+print(dataframedf["YearsCode"].median()) #print 9.0
