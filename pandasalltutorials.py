@@ -2076,3 +2076,234 @@ print(dataframedf["YearsCode"].unique())
 '''
 print(dataframedf["YearsCode"].mean()) #print 11.662114216834588
 print(dataframedf["YearsCode"].median()) #print 9.0
+
+#Python Pandas Tutorial -Part 10- Working with Dates and Time Series Data
+import pandas as pd
+dfdataframe = pd.read_csv("ETH_1h.csv") #CSV file is a cryptocurrency file Ethereum ETH
+print(dfdataframe.head()) #CSV file is a cryptocurrency file Ethereum ETH
+'''
+               Date  Symbol    Open    High     Low   Close      Volume
+0  2020-03-13 08-PM  ETHUSD  129.94  131.82  126.87  128.71  1940673.93
+1  2020-03-13 07-PM  ETHUSD  119.51  132.02  117.10  129.94  7579741.09
+2  2020-03-13 06-PM  ETHUSD  124.47  124.85  115.50  119.51  4898735.81
+3  2020-03-13 05-PM  ETHUSD  124.08  127.42  121.63  124.47  2753450.92
+4  2020-03-13 04-PM  ETHUSD  124.85  129.51  120.17  124.08  4461424.71
+'''
+print(dfdataframe.loc[0, "Date"]) #print 2020-03-13 08-PM
+print(type(dfdataframe.loc[0, "Date"])) #print <class 'str'>
+#instructor says okay to look at strftime and strptime documentation.  Can't memorize all. docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+dfdataframe["Date"] = pd.to_datetime(dfdataframe["Date"], format="%Y-%m-%d %I-%p")
+print(dfdataframe["Date"].head())
+'''
+0   2020-03-13 20:00:00
+1   2020-03-13 19:00:00
+2   2020-03-13 18:00:00
+3   2020-03-13 17:00:00
+4   2020-03-13 16:00:00
+Name: Date, dtype: datetime64[ns]
+'''
+print(dfdataframe.loc[0, "Date"]) #print 2020-03-13 20:00:00
+print(type(dfdataframe.loc[0, "Date"])) #print <class 'pandas._libs.tslib.Timestamp'>
+
+#format Date column during Panda reading .csv file
+#dateparserlambda = lambda x: pd.datetime.strptime(x, "%Y-%m-%d %I-%p")
+def dateparserlambda(x): return pd.datetime.strptime(x, "%Y-%m-%d %I-%p") #my Sublime Python packages edit my lambda formula.  Original lambda is above.
+
+
+dfdataframeconvertstringtodatehere = pd.read_csv("ETH_1h.csv", parse_dates=["Date"], date_parser=dateparserlambda) #CSV file is a cryptocurrency file Ethereum ETH
+print(dfdataframeconvertstringtodatehere.head())
+'''
+                 Date  Symbol    Open    High     Low   Close      Volume
+0 2020-03-13 20:00:00  ETHUSD  129.94  131.82  126.87  128.71  1940673.93
+1 2020-03-13 19:00:00  ETHUSD  119.51  132.02  117.10  129.94  7579741.09
+2 2020-03-13 18:00:00  ETHUSD  124.47  124.85  115.50  119.51  4898735.81
+3 2020-03-13 17:00:00  ETHUSD  124.08  127.42  121.63  124.47  2753450.92
+4 2020-03-13 16:00:00  ETHUSD  124.85  129.51  120.17  124.08  4461424.71
+'''
+#dfdataframeconvertstringtodatehere["New Column Day Of Week"] = dfdataframeconvertstringtodatehere.dt.day_name() #error message AttributeError: 'DataFrame' object has no attribute 'dt'
+print(dfdataframeconvertstringtodatehere["Date"].min()) #print 2017-07-01 11:00:00
+print(dfdataframeconvertstringtodatehere["Date"].max()) #print 2020-03-13 20:00:00
+print(dfdataframeconvertstringtodatehere["Date"].max() - dfdataframeconvertstringtodatehere["Date"].min()) #print 986 days 09:00:00
+year20192000filter = (dfdataframeconvertstringtodatehere["Date"] >= "2019") & (dfdataframeconvertstringtodatehere["Date"] < "2020")
+year20192000datesfilter = (dfdataframeconvertstringtodatehere["Date"] >= pd.to_datetime("2019-01-01")) & (dfdataframeconvertstringtodatehere["Date"] < pd.to_datetime("2020-01-10"))
+year2000filter = dfdataframeconvertstringtodatehere["Date"] >= "2020"
+print(dfdataframeconvertstringtodatehere.loc[year2000filter])
+'''
+Date  Symbol    Open    High     Low   Close       Volume
+0    2020-03-13 20:00:00  ETHUSD  129.94  131.82  126.87  128.71   1940673.93
+1    2020-03-13 19:00:00  ETHUSD  119.51  132.02  117.10  129.94   7579741.09
+2    2020-03-13 18:00:00  ETHUSD  124.47  124.85  115.50  119.51   4898735.81
+3    2020-03-13 17:00:00  ETHUSD  124.08  127.42  121.63  124.47   2753450.92
+...
+1746 2020-01-01 02:00:00  ETHUSD  130.14  130.50  129.91  130.37    396315.72
+1747 2020-01-01 01:00:00  ETHUSD  128.34  130.14  128.32  130.14    635419.40
+1748 2020-01-01 00:00:00  ETHUSD  128.54  128.54  128.12  128.34    245119.91
+'''
+indexcolumnisdate = dfdataframeconvertstringtodatehere.set_index("Date")
+print(indexcolumnisdate.head())
+'''
+Symbol    Open    High     Low   Close      Volume
+Date
+2020-03-13 20:00:00  ETHUSD  129.94  131.82  126.87  128.71  1940673.93
+2020-03-13 19:00:00  ETHUSD  119.51  132.02  117.10  129.94  7579741.09
+2020-03-13 18:00:00  ETHUSD  124.47  124.85  115.50  119.51  4898735.81
+2020-03-13 17:00:00  ETHUSD  124.08  127.42  121.63  124.47  2753450.92
+2020-03-13 16:00:00  ETHUSD  124.85  129.51  120.17  124.08  4461424.71
+'''
+#indexcolumnisdate = dfdataframeconvertstringtodatehere.set_index("Date", inplace=True) #inplace=True makes set index permanent created an error maybe assign to another variable
+dfdataframeconvertstringtodatehere.set_index("Date", inplace=True)  #inplace=True makes set index permanent
+print(dfdataframeconvertstringtodatehere.head())
+'''
+                     Symbol    Open    High     Low   Close      Volume
+Date                                                                   
+2020-03-13 20:00:00  ETHUSD  129.94  131.82  126.87  128.71  1940673.93
+2020-03-13 19:00:00  ETHUSD  119.51  132.02  117.10  129.94  7579741.09
+2020-03-13 18:00:00  ETHUSD  124.47  124.85  115.50  119.51  4898735.81
+2020-03-13 17:00:00  ETHUSD  124.08  127.42  121.63  124.47  2753450.92
+2020-03-13 16:00:00  ETHUSD  124.85  129.51  120.17  124.08  4461424.71
+'''
+print(dfdataframeconvertstringtodatehere["2019"].head())
+'''
+                     Symbol    Open    High     Low   Close      Volume
+Date                                                                   
+2019-12-31 23:00:00  ETHUSD  128.33  128.69  128.14  128.54   440678.91
+2019-12-31 22:00:00  ETHUSD  128.38  128.69  127.95  128.33   554646.02
+2019-12-31 21:00:00  ETHUSD  127.86  128.43  127.72  128.38   350155.69
+2019-12-31 20:00:00  ETHUSD  127.84  128.34  127.71  127.86   428183.38
+2019-12-31 19:00:00  ETHUSD  128.69  128.69  127.60  127.84  1169847.84
+'''
+print(dfdataframeconvertstringtodatehere["2020-01-19":"2020-02-14"])
+'''                  Symbol    Open    High     Low   Close      Volume
+Date                                                                                                                                 
+2020-02-14 23:00:00  ETHUSD  284.13  287.98  282.68  286.27  2265638.82
+2020-02-14 22:00:00  ETHUSD  282.79  284.53  281.32  284.13  2552361.21
+2020-02-14 21:00:00  ETHUSD  283.24  284.50  281.64  282.79  2068601.56
+...                     ...     ...     ...     ...     ...         ...
+2020-01-19 02:00:00  ETHUSD  175.18  176.90  174.50  176.24   972557.22
+2020-01-19 01:00:00  ETHUSD  176.18  178.00  174.00  175.18  2372314.02
+2020-01-19 00:00:00  ETHUSD  174.06  176.37  173.18  176.18   697611.75
+
+[648 rows x 6 columns]
+'''
+print(dfdataframeconvertstringtodatehere["2020-01-19":"2020-02-14"]["Close"])  #get the Close column
+'''
+Date
+2020-02-14 23:00:00    286.27
+2020-02-14 22:00:00    284.13
+2020-02-14 21:00:00    282.79
+                        ...  
+2020-01-19 02:00:00    176.24
+2020-01-19 01:00:00    175.18
+2020-01-19 00:00:00    176.18
+Name: Close, Length: 648, dtype: float64
+'''
+print(dfdataframeconvertstringtodatehere["2020-01-19":"2020-02-14"]["Close"].mean()) #print 194.86529320987654
+print(dfdataframeconvertstringtodatehere["2020-01-01"]["High"])  #get the High column for Jan 1, 2020
+'''
+Date
+2020-01-01 23:00:00    130.27
+2020-01-01 22:00:00    131.41
+2020-01-01 21:00:00    131.99
+2020-01-01 20:00:00    131.87
+2020-01-01 19:00:00    131.72
+2020-01-01 18:00:00    132.14
+2020-01-01 17:00:00    132.68
+2020-01-01 16:00:00    132.56
+2020-01-01 15:00:00    132.15
+2020-01-01 14:00:00    132.05
+2020-01-01 13:00:00    132.08
+2020-01-01 12:00:00    131.31
+2020-01-01 11:00:00    131.42
+2020-01-01 10:00:00    130.33
+2020-01-01 09:00:00    130.22
+2020-01-01 08:00:00    130.01
+2020-01-01 07:00:00    130.25
+2020-01-01 06:00:00    130.25
+2020-01-01 05:00:00    129.94
+2020-01-01 04:00:00    130.00
+2020-01-01 03:00:00    130.44
+2020-01-01 02:00:00    130.50
+2020-01-01 01:00:00    130.14
+2020-01-01 00:00:00    128.54
+Name: High, dtype: float64
+'''
+print(dfdataframeconvertstringtodatehere["2020-01-01"]["High"].max())  #print 132.68
+#instructor says okay to look at strftime and strptime documentation. Can't memorize all. pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#dateoffset-objects
+highestamountperday = dfdataframeconvertstringtodatehere["High"].resample("D").max() #Resample at a daily basis.  Get the highest number from the High column
+print(highestamountperday)
+'''
+Date
+2017-07-01    279.99
+2017-07-02    293.73
+2017-07-03    285.00
+2017-07-04    282.83
+2017-07-05    274.97
+...
+2020-03-09    208.65
+2020-03-10    206.28
+2020-03-11    202.98
+2020-03-12    195.64
+2020-03-13    148.00
+Freq: D, Name: High, Length: 987, dtype: float64
+'''
+print(highestamountperday["2020-01-01"]) #print 132.68
+# import matplotlib.pyplot as plt
+# plt.title("plt.title()", fontsize=20)
+# plt.xlabel("plt.xlabel()")
+# plt.ylabel("plt.ylabel())")
+# plt.plot(highestamountperday)
+# plt.show()
+print(dfdataframeconvertstringtodatehere.resample("W").mean())  #mean values by week average values for each column by week
+'''
+Open         High          Low        Close        Volume
+Date                                                                        
+2017-07-02   268.066486   271.124595   264.819730   268.202162  2.185035e+06
+2017-07-09   261.337024   262.872917   259.186190   261.062083  1.337349e+06
+2017-07-16   196.193214   199.204405   192.722321   195.698393  2.986756e+06
+2017-07-23   212.351429   215.779286   209.126310   212.783750  4.298593e+06
+2017-07-30   203.496190   205.110357   201.714048   203.309524  1.581729e+06
+...                 ...          ...          ...          ...           ...
+2020-02-09   207.392202   208.751964   206.279762   207.633333  1.112929e+06
+2020-02-16   255.021667   257.255238   252.679762   255.198452  2.329087e+06
+2020-02-23   265.220833   267.263690   262.948512   265.321905  1.826094e+06
+2020-03-01   236.720536   238.697500   234.208750   236.373988  2.198762e+06
+2020-03-08   229.923571   231.284583   228.373810   229.817619  1.628910e+06
+2020-03-15   176.937521   179.979487   172.936239   176.332821  4.259828e+06
+
+[142 rows x 5 columns]
+'''
+print(dfdataframeconvertstringtodatehere.resample("W").agg({"Close": "mean", "High": "max", "Low": "min", "Volume": "sum"}))
+'''
+                  Close     High     Low        Volume
+Date                                                  
+2017-07-02   268.202162   293.73  253.23  8.084631e+07
+2017-07-09   261.062083   285.00  231.25  2.246746e+08
+2017-07-16   195.698393   240.33  130.26  5.017750e+08
+2017-07-23   212.783750   249.40  153.25  7.221637e+08
+2017-07-30   203.309524   229.99  178.03  2.657305e+08
+...                 ...      ...     ...           ...
+2020-02-09   207.633333   230.90  184.29  1.869721e+08
+2020-02-16   255.198452   290.00  216.31  3.912867e+08
+2020-02-23   265.321905   287.13  242.36  3.067838e+08
+2020-03-01   236.373988   278.13  209.26  3.693920e+08
+2020-03-08   229.817619   253.01  196.00  2.736569e+08
+2020-03-15   176.332821   208.65   90.00  4.983998e+08
+
+[142 rows x 4 columns]
+'''
+
+#Python Pandas Tutorial -Part 11- ReadingWriting Data to Different Sources - Excel- JSON- SQL- Etc
+import pandas as pd
+dataframedf = pd.read_csv("developer_survey_2019/survey_results_public.csv")
+readtheschema = pd.read_csv("developer_survey_2019/survey_results_schema.csv")
+pd.set_option("display.max_columns", 85) #allows number of columns to display horizontally
+pd.set_option("display.max_rows", 85) #allows number of rows to display horizontally
+#print(dataframedf.head())
+filtercanada = dataframedf["Country"] == "Canada"
+dataframedffiltercanada = dataframedf.loc[filtercanada]
+#print(dataframedffiltercanada.head())
+dataframedffiltercanada.to_csv("developer_survey_2019/canadacsv.csv") #export Panda dataframe in .csv
+dataframedffiltercanada.to_csv("developer_survey_2019/canadatabdelimited.tsv", sep="\t") #export Panda dataframe in .tsv tab delimited
+dataframedfreadtabdelimited = pd.read_csv("developer_survey_2019/canadatabdelimited.tsv", sep="\t")
+dataframedffiltercanada.to_json("developer_survey_2019/canadajson.json", orient="records", lines=True)
+dataframedfreadjson = pd.read_json("developer_survey_2019/canadajson.json", orient="records", lines=True)
