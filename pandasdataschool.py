@@ -216,3 +216,132 @@ print(ufodataframe2.head())
 #replace spaces in column headers with underscores
 ufodataframe2.columns = ufodataframe2.columns.str.replace(" ", "_")
 print(ufodataframe2.columns) #print Index(['city', 'colors_reported', 'shape_reported', 'state', 'time'], dtype='object')
+
+#How do I remove columns from a pandas DataFrame?
+ufodataframe = pd.read_csv("http://bit.ly/uforeports")
+print(ufodataframe.head())
+'''
+                   City Colors Reported Shape Reported State             Time
+0                Ithaca             NaN       TRIANGLE    NY   6/1/1930 22:00
+1           Willingboro             NaN          OTHER    NJ  6/30/1930 20:00
+2               Holyoke             NaN           OVAL    CO  2/15/1931 14:00
+3               Abilene             NaN           DISK    KS   6/1/1931 13:00
+4  New York Worlds Fair             NaN          LIGHT    NY  4/18/1933 19:00
+'''
+print(ufodataframe.shape) #print (18241, 5)
+ufodataframe.drop("Colors Reported", axis=1, inplace=True)  #axis is a direction.  0 is row.  1 is column.
+print(ufodataframe.head())
+'''
+                   City Shape Reported State             Time
+0                Ithaca       TRIANGLE    NY   6/1/1930 22:00
+1           Willingboro          OTHER    NJ  6/30/1930 20:00
+2               Holyoke           OVAL    CO  2/15/1931 14:00
+3               Abilene           DISK    KS   6/1/1931 13:00
+4  New York Worlds Fair          LIGHT    NY  4/18/1933 19:00
+'''
+ufodataframe.drop(["City", "State"], axis=1, inplace=True)
+print(ufodataframe.head())
+'''
+  Shape Reported             Time
+0       TRIANGLE   6/1/1930 22:00
+1          OTHER  6/30/1930 20:00
+2           OVAL  2/15/1931 14:00
+3           DISK   6/1/1931 13:00
+4          LIGHT  4/18/1933 19:00
+'''
+#remove rows
+ufodataframe.drop([0, 1], axis=0, inplace=True)  #rows are called indexes or labels
+print(ufodataframe.head())
+'''
+  Shape Reported             Time
+2           OVAL  2/15/1931 14:00
+3           DISK   6/1/1931 13:00
+4          LIGHT  4/18/1933 19:00
+5           DISK  9/15/1934 15:30
+6         CIRCLE   6/15/1935 0:00
+'''
+print(ufodataframe.shape) #print (18239, 2)
+
+#How do I sort a pandas DataFrame or a Series?
+moviesimdbdataframe = pd.read_csv("http://bit.ly/imdbratings")
+print(moviesimdbdataframe.head())
+'''
+   star_rating                     title content_rating   genre  duration  \
+0          9.3  The Shawshank Redemption              R   Crime       142   
+1          9.2             The Godfather              R   Crime       175   
+2          9.1    The Godfather: Part II              R   Crime       200   
+3          9.0           The Dark Knight          PG-13  Action       152   
+4          8.9              Pulp Fiction              R   Crime       154   
+
+                                         actors_list  
+0  [u'Tim Robbins', u'Morgan Freeman', u'Bob Gunt...  
+1    [u'Marlon Brando', u'Al Pacino', u'James Caan']  
+2  [u'Al Pacino', u'Robert De Niro', u'Robert Duv...  
+3  [u'Christian Bale', u'Heath Ledger', u'Aaron E...  
+4  [u'John Travolta', u'Uma Thurman', u'Samuel L....  
+'''
+print(moviesimdbdataframe.title.sort_values()) #Two versions to sort a series or a column
+'''
+542                   (500) Days of Summer
+5                             12 Angry Men
+201                       12 Years a Slave
+698                              127 Hours
+110                  2001: A Space Odyssey
+910                                   2046
+596                               21 Grams
+624                              25th Hour
+708                       28 Days Later...
+60                                3 Idiots
+225                                 3-Iron
+570                                    300
+...
+Name: title, Length: 979, dtype: object
+'''
+print(moviesimdbdataframe["title"].sort_values(ascending=False)) #Two versions to sort a series or a column
+'''
+864                                  [Rec]
+526                                   Zulu
+615                             Zombieland
+677                                 Zodiac
+955                       Zero Dark Thirty
+535                                  Zelig
+280                     Young Frankenstein
+96                                 Yojimbo
+235                                Yip Man
+403                             Ying xiong
+695                      Y Tu Mama Tambien
+871                                     X2
+Name: title, Length: 979, dtype: object
+'''
+print(moviesimdbdataframe.sort_values("title", ascending=False).head()) #returns a data frame
+'''
+     star_rating                  title content_rating      genre  duration  \
+542          7.8   (500) Days of Summer          PG-13     Comedy        95   
+5            8.9           12 Angry Men      NOT RATED      Drama        96   
+201          8.1       12 Years a Slave              R  Biography       134   
+698          7.6              127 Hours              R  Adventure        94   
+110          8.3  2001: A Space Odyssey              G    Mystery       160   
+
+                                           actors_list  
+542  [u'Zooey Deschanel', u'Joseph Gordon-Levitt', ...  
+5    [u'Henry Fonda', u'Lee J. Cobb', u'Martin Bals...  
+201  [u'Chiwetel Ejiofor', u'Michael Kenneth Willia...  
+698  [u'James Franco', u'Amber Tamblyn', u'Kate Mara']  
+110  [u'Keir Dullea', u'Gary Lockwood', u'William S...  
+'''
+print(moviesimdbdataframe.sort_values(["content_rating", "duration"], ascending=True).head()) #sort multiple columns
+'''
+     star_rating                           title content_rating      genre  \
+713          7.6                 The Jungle Book       APPROVED  Animation   
+513          7.8  Invasion of the Body Snatchers       APPROVED     Horror   
+272          8.1                     The Killing       APPROVED      Crime   
+703          7.6                         Dracula       APPROVED     Horror   
+612          7.7              A Hard Day's Night       APPROVED     Comedy   
+
+     duration                                        actors_list  
+713        78  [u'Phil Harris', u'Sebastian Cabot', u'Louis P...  
+513        80  [u'Kevin McCarthy', u'Dana Wynter', u'Larry Ga...  
+272        85  [u'Sterling Hayden', u'Coleen Gray', u'Vince E...  
+703        85  [u'Bela Lugosi', u'Helen Chandler', u'David Ma...  
+612        87  [u'John Lennon', u'Paul McCartney', u'George H...  
+'''
