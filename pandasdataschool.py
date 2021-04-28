@@ -345,3 +345,420 @@ print(moviesimdbdataframe.sort_values(["content_rating", "duration"], ascending=
 703        85  [u'Bela Lugosi', u'Helen Chandler', u'David Ma...  
 612        87  [u'John Lennon', u'Paul McCartney', u'George H...  
 '''
+
+#How do I filter rows of a pandas DataFrame by column value-2AFGPdNn4FM
+movies = pd.read_csv("http://bit.ly/imdbratings")
+print(movies.head())
+'''
+   star_rating                     title content_rating   genre  duration  \
+0          9.3  The Shawshank Redemption              R   Crime       142   
+1          9.2             The Godfather              R   Crime       175   
+2          9.1    The Godfather: Part II              R   Crime       200   
+3          9.0           The Dark Knight          PG-13  Action       152   
+4          8.9              Pulp Fiction              R   Crime       154   
+
+                                         actors_list  
+0  [u'Tim Robbins', u'Morgan Freeman', u'Bob Gunt...  
+1    [u'Marlon Brando', u'Al Pacino', u'James Caan']  
+2  [u'Al Pacino', u'Robert De Niro', u'Robert Duv...  
+3  [u'Christian Bale', u'Heath Ledger', u'Aaron E...  
+4  [u'John Travolta', u'Uma Thurman', u'Samuel L....  
+'''
+print(movies.shape) #print (979, 6)
+booleanslist = []
+for movieslength in movies.duration:
+  if movieslength >= 200:
+    booleanslist.append(True)
+  else:
+    booleanslist.append(False)
+print(booleanslist[0:5]) #print [False, False, True, False, False]
+print(len(booleanslist)) #print 979
+long200movies = pd.Series(booleanslist)
+print(long200movies.head())
+'''
+0    False
+1    False
+2     True
+3    False
+4    False
+dtype: bool
+'''
+print(movies[long200movies])  #RM:  it printed the movies rows where True from long200movies
+'''
+     star_rating                                          title  \
+2            9.1                         The Godfather: Part II   
+7            8.9  The Lord of the Rings: The Return of the King   
+17           8.7                                  Seven Samurai   
+78           8.4                    Once Upon a Time in America   
+85           8.4                             Lawrence of Arabia   
+...
+'''
+print(movies["genre"]) #RM:  comparison to slice a pandas data frame by column
+'''
+0          Crime
+1          Crime
+2          Crime
+3         Action
+4          Crime
+5          Drama
+6        Western
+7      Adventure
+8      Biography
+...
+'''
+long200moviesdirectway = movies.duration >= 200
+print(long200moviesdirectway.head())
+'''
+0    False
+1    False
+2     True
+3    False
+4    False
+Name: duration, dtype: bool
+'''
+print(movies[long200moviesdirectway].head())
+'''
+    star_rating                                          title content_rating  \
+2           9.1                         The Godfather: Part II              R   
+7           8.9  The Lord of the Rings: The Return of the King          PG-13   
+17          8.7                                  Seven Samurai        UNRATED   
+78          8.4                    Once Upon a Time in America              R   
+85          8.4                             Lawrence of Arabia             PG   
+
+        genre  duration                                        actors_list  
+2       Crime       200  [u'Al Pacino', u'Robert De Niro', u'Robert Duv...  
+7   Adventure       201  [u'Elijah Wood', u'Viggo Mortensen', u'Ian McK...  
+17      Drama       207  [u'Toshir\xf4 Mifune', u'Takashi Shimura', u'K...  
+78      Crime       229  [u'Robert De Niro', u'James Woods', u'Elizabet...  
+85  Adventure       216  [u"Peter O'Toole", u'Alec Guinness', u'Anthony...  
+'''
+print(movies[movies.duration >= 200].head())
+'''
+    star_rating                                          title content_rating  \
+2           9.1                         The Godfather: Part II              R   
+7           8.9  The Lord of the Rings: The Return of the King          PG-13   
+17          8.7                                  Seven Samurai        UNRATED   
+78          8.4                    Once Upon a Time in America              R   
+85          8.4                             Lawrence of Arabia             PG   
+
+        genre  duration                                        actors_list  
+2       Crime       200  [u'Al Pacino', u'Robert De Niro', u'Robert Duv...  
+7   Adventure       201  [u'Elijah Wood', u'Viggo Mortensen', u'Ian McK...  
+17      Drama       207  [u'Toshir\xf4 Mifune', u'Takashi Shimura', u'K...  
+78      Crime       229  [u'Robert De Niro', u'James Woods', u'Elizabet...  
+85  Adventure       216  [u"Peter O'Toole", u'Alec Guinness', u'Anthony... 
+'''
+print(movies[movies.duration >= 200].genre.head()) #print(movies[movies.duration >= 200]["genre"]head()) also works
+'''
+2         Crime
+7     Adventure
+17        Drama
+78        Crime
+85    Adventure
+Name: genre, dtype: object
+'''
+print(movies.loc[movies.duration >= 200, "genre"].head()) #YouTuber says .loc best way
+'''
+2         Crime
+7     Adventure
+17        Drama
+78        Crime
+85    Adventure
+Name: genre, dtype: object
+'''
+
+#How do I apply multiple filter criteria to a pandas DataFrame-YPItfQ87qjM
+movies = pd.read_csv("http://bit.ly/imdbratings")
+print(movies.head())
+'''
+   star_rating                     title content_rating   genre  duration  \
+0          9.3  The Shawshank Redemption              R   Crime       142   
+1          9.2             The Godfather              R   Crime       175   
+2          9.1    The Godfather: Part II              R   Crime       200   
+3          9.0           The Dark Knight          PG-13  Action       152   
+4          8.9              Pulp Fiction              R   Crime       154   
+
+                                         actors_list  
+0  [u'Tim Robbins', u'Morgan Freeman', u'Bob Gunt...  
+1    [u'Marlon Brando', u'Al Pacino', u'James Caan']  
+2  [u'Al Pacino', u'Robert De Niro', u'Robert Duv...  
+3  [u'Christian Bale', u'Heath Ledger', u'Aaron E...  
+4  [u'John Travolta', u'Uma Thurman', u'Samuel L....  
+'''
+print(movies[movies.duration >= 200])
+'''
+    content_rating      genre  duration  \
+2                R      Crime       200   
+7            PG-13  Adventure       201   
+17         UNRATED      Drama       207   
+78               R      Crime       229   
+85              PG  Adventure       216   
+...
+'''
+dramamoviesover200minutes = movies[(movies.duration >= 200) & (movies.genre == "Drama")]
+print(dramamoviesover200minutes)
+'''
+    star_rating               title content_rating  genre  duration  \
+17           8.7       Seven Samurai        UNRATED  Drama       207   
+157          8.2  Gone with the Wind              G  Drama       238   
+476          7.8              Hamlet          PG-13  Drama       242   
+...
+'''
+dramamovieorsover200minutes = movies[(movies.duration >= 200) | (movies.genre == "Drama")]
+print(dramamovieorsover200minutes)
+'''
+title  \
+2            9.1                          The Godfather: Part II   
+5            8.9                                    12 Angry Men   
+7            8.9   The Lord of the Rings: The Return of the King   
+9            8.9                                      Fight Club   
+13           8.8                                    Forrest Gump   
+'''
+print(movies[(movies.genre == "Crime") | (movies.genre == "Drama") | (movies.genre == "Action")])
+'''
+  star_rating                                            title  \
+0            9.3                         The Shawshank Redemption   
+1            9.2                                    The Godfather   
+2            9.1                           The Godfather: Part II   
+3            9.0                                  The Dark Knight   
+4            8.9                                     Pulp Fiction   
+5            8.9                                     12 Angry Men   
+...
+'''
+betterwaymultiplefiltercolumns = movies[movies.genre.isin(["Crime", "Drama", "Action"])]
+print(betterwaymultiplefiltercolumns)
+'''
+[538 rows x 6 columns]
+star_rating                                            title  \
+0            9.3                         The Shawshank Redemption   
+1            9.2                                    The Godfather   
+2            9.1                           The Godfather: Part II   
+3            9.0                                  The Dark Knight   
+4            8.9                                     Pulp Fiction   
+5            8.9                                     12 Angry Men   
+'''
+
+#Your pandas questions answered!-B-r9VuK80dk
+#Read from a .csv file two columns only.  Fastest method to read from a .csv file.
+ufo = pd.read_csv("http://bit.ly/uforeports")
+print(ufo.columns) #print Index(['City', 'Colors Reported', 'Shape Reported', 'State', 'Time'], dtype='object')
+ufocitystatecolumns = pd.read_csv("http://bit.ly/uforeports", usecols=["City", "State"]) #ufocitystatecolumns = pd.read_csv("http://bit.ly/uforeports", usecols=[0, 4]) also works
+print(ufocitystatecolumns)
+'''
+                       City State
+0                    Ithaca    NY
+1               Willingboro    NJ
+2                   Holyoke    CO
+3                   Abilene    KS
+4      New York Worlds Fair    NY
+5               Valley City    ND
+...
+'''
+ufofirst3rows = pd.read_csv("http://bit.ly/uforeports", nrows=3)
+print(ufofirst3rows)
+'''
+          City  Colors Reported Shape Reported State             Time
+0       Ithaca              NaN       TRIANGLE    NY   6/1/1930 22:00
+1  Willingboro              NaN          OTHER    NJ  6/30/1930 20:00
+2      Holyoke              NaN           OVAL    CO  2/15/1931 14:00
+'''
+#How do Dataframes and Series work with regard to selecting individual entries and iteration (for x in userdata:)?  Answer is Pandas series is iterable just like a Python list.
+ufofirst3rows = pd.read_csv("http://bit.ly/uforeports", nrows=3)
+for cityonly in ufofirst3rows.City:
+  print(cityonly)
+  '''
+    Ithaca
+    Willingboro
+    Holyoke
+  '''
+#Iterate a Pandas dataframe Pandas has methods.
+ufofirst3rows = pd.read_csv("http://bit.ly/uforeports", nrows=3)
+for index, row in ufofirst3rows.iterrows():
+  print(index, row.City, row.State)
+  '''
+    0 Ithaca NY
+    1 Willingboro NJ
+    2 Holyoke CO
+  '''
+#Drop every non-numeric column from a DataFrame?
+drinks = pd.read_csv("http://bit.ly/drinksbycountry")
+print(drinks.dtypes)
+'''
+country                          object
+beer_servings                     int64
+spirit_servings                   int64
+wine_servings                     int64
+total_litres_of_pure_alcohol    float64
+continent                        object
+dtype: object
+'''
+import numpy as np
+print(drinks.select_dtypes(include=[np.number]).dtypes)
+'''
+beer_servings                     int64
+spirit_servings                   int64
+wine_servings                     int64
+total_litres_of_pure_alcohol    float64
+dtype: object
+'''
+#describe() method
+print(drinks.describe())
+'''
+       beer_servings  spirit_servings  wine_servings  \
+count     193.000000       193.000000     193.000000   
+mean      106.160622        80.994819      49.450777   
+std       101.143103        88.284312      79.697598   
+min         0.000000         0.000000       0.000000   
+25%        20.000000         4.000000       1.000000   
+50%        76.000000        56.000000       8.000000   
+75%       188.000000       128.000000      59.000000   
+max       376.000000       438.000000     370.000000   
+
+       total_litres_of_pure_alcohol  
+count                    193.000000  
+mean                       4.717098  
+std                        3.773298  
+min                        0.000000  
+25%                        1.300000  
+50%                        4.200000  
+75%                        7.200000  
+max                       14.400000 
+'''
+print(drinks.describe(include="all"))
+'''
+        country  beer_servings  spirit_servings  wine_servings  \
+count       193     193.000000       193.000000     193.000000   
+unique      193            NaN              NaN            NaN   
+top     Morocco            NaN              NaN            NaN   
+freq          1            NaN              NaN            NaN   
+mean        NaN     106.160622        80.994819      49.450777   
+std         NaN     101.143103        88.284312      79.697598   
+min         NaN       0.000000         0.000000       0.000000   
+25%         NaN      20.000000         4.000000       1.000000   
+50%         NaN      76.000000        56.000000       8.000000   
+75%         NaN     188.000000       128.000000      59.000000   
+max         NaN     376.000000       438.000000     370.000000   
+
+        total_litres_of_pure_alcohol continent  
+count                     193.000000       193  
+unique                           NaN         6  
+top                              NaN    Africa  
+freq                             NaN        53  
+mean                        4.717098       NaN  
+std                         3.773298       NaN  
+min                         0.000000       NaN  
+25%                         1.300000       NaN  
+50%                         4.200000       NaN  
+75%                         7.200000       NaN  
+max                        14.400000       NaN 
+'''
+print(drinks.describe(include=["object", "float64"]))
+'''
+        country  total_litres_of_pure_alcohol continent
+count       193                    193.000000       193
+unique      193                           NaN         6
+top     Denmark                           NaN    Africa
+freq          1                           NaN        53
+mean        NaN                      4.717098       NaN
+std         NaN                      3.773298       NaN
+min         NaN                      0.000000       NaN
+25%         NaN                      1.300000       NaN
+50%         NaN                      4.200000       NaN
+75%         NaN                      7.200000       NaN
+max         NaN                     14.400000       NaN
+'''
+print(drinks.describe(include=["int8", "float64"]))
+'''
+        country  total_litres_of_pure_alcohol continent
+count       193                    193.000000       193
+unique      193                           NaN         6
+top     Senegal                           NaN    Africa
+freq          1                           NaN        53
+mean        NaN                      4.717098       NaN
+std         NaN                      3.773298       NaN
+min         NaN                      0.000000       NaN
+25%         NaN                      1.300000       NaN
+50%         NaN                      4.200000       NaN
+75%         NaN                      7.200000       NaN
+max         NaN                     14.400000       NaN
+       total_litres_of_pure_alcohol
+count                    193.000000
+mean                       4.717098
+std                        3.773298
+min                        0.000000
+25%                        1.300000
+50%                        4.200000
+75%                        7.200000
+max                       14.400000
+'''
+
+#How do I use the "axis" parameter in pandas?
+#Axis 0 is the row axis.  Axis 1 is the column axis.
+drinks = pd.read_csv("http://bit.ly/drinksbycountry")
+print(drinks.head())
+'''
+       country  beer_servings  spirit_servings  wine_servings  \
+0  Afghanistan              0                0              0   
+1      Albania             89              132             54   
+2      Algeria             25                0             14   
+3      Andorra            245              138            312   
+4       Angola            217               57             45   
+
+   total_litres_of_pure_alcohol continent  
+0                           0.0      Asia  
+1                           4.9    Europe  
+2                           0.7    Africa  
+3                          12.4    Europe  
+4                           5.9    Africa  
+'''
+removecontinentcolumn = drinks.drop("continent", axis=1)
+print(removecontinentcolumn.head())
+'''
+       country  beer_servings  spirit_servings  wine_servings  \
+0  Afghanistan              0                0              0   
+1      Albania             89              132             54   
+2      Algeria             25                0             14   
+3      Andorra            245              138            312   
+4       Angola            217               57             45   
+
+   total_litres_of_pure_alcohol  
+0                           0.0  
+1                           4.9  
+2                           0.7  
+3                          12.4  
+4                           5.9  
+'''
+removerowtwo = drinks.drop(2, axis=0)
+print(removerowtwo.head())
+'''
+             country  beer_servings  spirit_servings  wine_servings  \
+0        Afghanistan              0                0              0   
+1            Albania             89              132             54   
+3            Andorra            245              138            312   
+4             Angola            217               57             45   
+5  Antigua & Barbuda            102              128             45   
+
+   total_litres_of_pure_alcohol      continent  
+0                           0.0           Asia  
+1                           4.9         Europe  
+3                          12.4         Europe  
+4                           5.9         Africa  
+5                           4.9  North America  
+'''
+print(drinks.mean(axis=0))  #RM:  confusing Axis 0 is row for removing which is default.  Axis 0 is the column for calculation.  Calculating the mean by column for numerical columns.  axis="index" is valid.
+'''
+beer_servings                   106.160622
+spirit_servings                  80.994819
+wine_servings                    49.450777
+total_litres_of_pure_alcohol      4.717098
+dtype: float64
+'''
+print(drinks.mean(axis=1)) #RM:  confusing Axis 1 is column for removing.  Axis 1 is the row for calculation.  Calculating the mean by column for numerical columns.  axis="columns" is valid.
+'''
+0        0.000
+1       69.975
+2        9.925
+3      176.850
+4       81.225
+5       69.975
+'''
