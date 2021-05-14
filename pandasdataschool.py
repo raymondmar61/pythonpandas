@@ -1163,3 +1163,107 @@ print(countdurationcolumnvalues)
 120    18
 ...
 '''
+
+#How do I handle missing values in pandas-fCMrO_VzeL8
+import pandas as pd
+ufo = pd.read_csv("http://bit.ly/uforeports")
+print(ufo.tail())
+'''
+              City Colors Reported Shape Reported State              Time
+18236   Grant Park             NaN       TRIANGLE    IL  12/31/2000 23:00
+18237  Spirit Lake             NaN           DISK    IA  12/31/2000 23:00
+18238  Eagle River             NaN            NaN    WI  12/31/2000 23:45
+18239  Eagle River             RED          LIGHT    WI  12/31/2000 23:45
+18240         Ybor             NaN           OVAL    FL  12/31/2000 23:59
+'''
+nodatanull = ufo.isnull()
+print(nodatanull.tail())
+'''
+        City  Colors Reported  Shape Reported  State   Time
+18236  False             True           False  False  False
+18237  False             True           False  False  False
+18238  False             True            True  False  False
+18239  False            False           False  False  False
+18240  False             True           False  False  False
+'''
+yesdatanotnull = ufo.notnull()
+print(yesdatanotnull.tail())
+'''
+       City  Colors Reported  Shape Reported  State  Time
+18236  True            False            True   True  True
+18237  True            False            True   True  True
+18238  True            False           False   True  True
+18239  True             True            True   True  True
+18240  True            False            True   True  True
+'''
+countnullsforeachcolumn = ufo.isnull().sum()
+print(countnullsforeachcolumn)  #RM:  If it's null, then True.  True is 1.  Add the true's.  Add the 1's.
+'''
+City                  25
+Colors Reported    15359
+Shape Reported      2644
+State                  0
+Time                   0
+dtype: int64
+'''
+blankcitycolumn = ufo[ufo.City.isnull()]
+print(blankcitycolumn)
+'''
+      City Colors Reported Shape Reported State              Time
+21     NaN             NaN            NaN    LA    8/15/1943 0:00
+22     NaN             NaN          LIGHT    LA    8/15/1943 0:00
+204    NaN             NaN           DISK    CA   7/15/1952 12:30
+241    NaN            BLUE           DISK    MT    7/4/1953 14:00
+613    NaN             NaN           DISK    NV    7/1/1960 12:00
+1877   NaN          YELLOW         CIRCLE    AZ    8/15/1969 1:00
+...
+'''
+removerowifanyvalueismissing = ufo.dropna(how="any")
+removerowifallvaluesaremissing = ufo.dropna(how="all")
+removerowifcityshapereportedismissing = ufo.dropna(subset=["City", "Shape Reported"], how="any")
+removerowifallcityshapereportedaremissing = ufo.dropna(subset=["City", "Shape Reported"], how="all")
+countvaluesinshapereportedcolumn = ufo["Shape Reported"].value_counts()
+countvaluesandnullinshapereportedcolumn = ufo["Shape Reported"].value_counts(dropna=False)
+print(countvaluesandnullinshapereportedcolumn)
+'''
+LIGHT        2803
+NaN          2644
+DISK         2122
+TRIANGLE     1889
+OTHER        1402
+CIRCLE       1365
+...
+'''
+print("\n")
+replacenullwithvarious = ufo["Shape Reported"].fillna(value="Various", inplace=False)
+print(replacenullwithvarious)
+'''
+...
+18234     TRIANGLE
+18235      Various
+18236     TRIANGLE
+18237         DISK
+18238      Various
+18239        LIGHT
+18240         OVAL
+Name: Shape Reported, Length: 18241, dtype: object
+'''
+print(ufo.tail())
+'''
+              City Colors Reported Shape Reported State              Time
+18236   Grant Park             NaN       TRIANGLE    IL  12/31/2000 23:00
+18237  Spirit Lake             NaN           DISK    IA  12/31/2000 23:00
+18238  Eagle River             NaN            NaN    WI  12/31/2000 23:45
+18239  Eagle River             RED          LIGHT    WI  12/31/2000 23:45
+18240         Ybor             NaN           OVAL    FL  12/31/2000 23:59
+'''
+ufo["Shape Reported"].fillna(value="Various", inplace=True) #inplace=True means make the change in the database
+print(ufo.tail())
+'''
+              City Colors Reported Shape Reported State              Time
+18236   Grant Park             NaN       TRIANGLE    IL  12/31/2000 23:00
+18237  Spirit Lake             NaN           DISK    IA  12/31/2000 23:00
+18238  Eagle River             NaN        Various    WI  12/31/2000 23:45
+18239  Eagle River             RED          LIGHT    WI  12/31/2000 23:45
+18240         Ybor             NaN           OVAL    FL  12/31/2000 23:59
+'''
