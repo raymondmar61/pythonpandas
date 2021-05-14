@@ -953,3 +953,213 @@ print(orders.item_name.str.contains("Chicken").astype(int).head())
 4    1
 Name: item_name, dtype: int64
 '''
+
+#When should I use a 'groupby' in pandas-qy0fDqoMJx8
+import pandas as pd
+drinks = pd.read_csv("http://bit.ly/drinksbycountry")
+print(drinks.head())
+'''
+       country  beer_servings  spirit_servings  wine_servings  \
+0  Afghanistan              0                0              0   
+1      Albania             89              132             54   
+2      Algeria             25                0             14   
+3      Andorra            245              138            312   
+4       Angola            217               57             45   
+
+   total_litres_of_pure_alcohol continent  
+0                           0.0      Asia  
+1                           4.9    Europe  
+2                           0.7    Africa  
+3                          12.4    Europe  
+4                           5.9    Africa 
+'''
+averagebeerservings = drinks.beer_servings.mean()
+print(averagebeerservings) #print 106.16062176165804
+groupbycontinent = drinks.groupby("continent")
+print(groupbycontinent.beer_servings.mean())
+'''
+continent
+Africa            61.471698
+Asia              37.045455
+Europe           193.777778
+North America    145.434783
+Oceania           89.687500
+South America    175.083333
+Name: beer_servings, dtype: float64
+'''
+#print(groupbycontinent.beer_servings.max())
+print(groupbycontinent.beer_servings.agg(["count", "min", "max", "mean"]))
+'''
+               count  min  max        mean
+continent                                 
+Africa            53    0  376   61.471698
+Asia              44    0  247   37.045455
+Europe            45    0  361  193.777778
+North America     23    1  285  145.434783
+Oceania           16    0  306   89.687500
+South America     12   93  333  175.083333
+'''
+print(drinks[drinks.continent == "Africa"])
+'''
+                      country  beer_servings  spirit_servings  wine_servings  \
+2                     Algeria             25                0             14   
+4                      Angola            217               57             45   
+18                      Benin             34                4             13   
+22                   Botswana            173               35             35   
+26               Burkina Faso             25                7              7   
+27                    Burundi             88                0              0   
+28              Cote d'Ivoire             37                1              7   
+...
+'''
+print(drinks[drinks.continent == "Africa"].beer_servings.mean()) #print 61.471698113207545
+print(drinks[drinks.continent == "Europe"].beer_servings.mean()) #print 193.77777777777777
+groupbycontinentallcolumns = drinks.groupby("continent")
+print(groupbycontinentallcolumns.mean())
+'''
+               beer_servings  spirit_servings  wine_servings  \
+continent                                                      
+Africa             61.471698        16.339623      16.264151   
+Asia               37.045455        60.840909       9.068182   
+Europe            193.777778       132.555556     142.222222   
+North America     145.434783       165.739130      24.521739   
+Oceania            89.687500        58.437500      35.625000   
+South America     175.083333       114.750000      62.416667   
+
+               total_litres_of_pure_alcohol  
+continent                                    
+Africa                             3.007547  
+Asia                               2.170455  
+Europe                             8.617778  
+North America                      5.995652  
+Oceania                            3.381250  
+South America                      6.308333 
+'''
+
+#How do I explore a pandas Series-QTVTq8SPzxM
+import pandas as pd
+movies = pd.read_csv("http://bit.ly/imdbratings")
+print(movies.head())
+'''
+   star_rating                     title content_rating   genre  duration  \
+0          9.3  The Shawshank Redemption              R   Crime       142   
+1          9.2             The Godfather              R   Crime       175   
+2          9.1    The Godfather: Part II              R   Crime       200   
+3          9.0           The Dark Knight          PG-13  Action       152   
+4          8.9              Pulp Fiction              R   Crime       154   
+
+                                         actors_list  
+0  [u'Tim Robbins', u'Morgan Freeman', u'Bob Gunt...  
+1    [u'Marlon Brando', u'Al Pacino', u'James Caan']  
+2  [u'Al Pacino', u'Robert De Niro', u'Robert Duv...  
+3  [u'Christian Bale', u'Heath Ledger', u'Aaron E...  
+4  [u'John Travolta', u'Uma Thurman', u'Samuel L.... 
+'''
+print(movies.dtypes)
+'''
+star_rating       float64
+title              object
+content_rating     object
+genre              object
+duration            int64
+actors_list        object
+dtype: object
+'''
+describecolumninformation = movies.genre.describe()
+print(describecolumninformation)
+'''
+count       979
+unique       16
+top       Drama
+freq        278
+Name: genre, dtype: object
+'''
+valuecountscolumninformation = movies.genre.value_counts()
+print(valuecountscolumninformation)
+'''
+Drama        278
+Comedy       156
+Action       136
+Crime        124
+Biography     77
+Adventure     75
+Animation     62
+Horror        29
+Mystery       16
+Western        9
+Sci-Fi         5
+Thriller       5
+Film-Noir      3
+Family         2
+History        1
+Fantasy        1
+Name: genre, dtype: int64
+'''
+valuecountscolumninformationpercentage = movies.genre.value_counts(normalize=True)
+print(valuecountscolumninformationpercentage)
+'''
+Drama        0.283963
+Comedy       0.159346
+Action       0.138917
+Crime        0.126660
+Biography    0.078652
+Adventure    0.076609
+Animation    0.063330
+Horror       0.029622
+Mystery      0.016343
+Western      0.009193
+Sci-Fi       0.005107
+Thriller     0.005107
+Film-Noir    0.003064
+Family       0.002043
+History      0.001021
+Fantasy      0.001021
+Name: genre, dtype: float64
+'''
+print(type(movies.genre.value_counts(normalize=True))) #print <class 'pandas.core.series.Series'>
+print(movies.genre.value_counts(normalize=True).head())
+'''
+Drama        0.283963
+Comedy       0.159346
+Action       0.138917
+Crime        0.126660
+Biography    0.078652
+Name: genre, dtype: float64
+'''
+print(movies.genre.unique()) #print ['Crime' 'Action' 'Drama' 'Western' 'Adventure' 'Biography' 'Comedy''Animation' 'Mystery' 'Horror' 'Film-Noir' 'Sci-Fi' 'History' 'Thriller''Family' 'Fantasy']
+print(movies.genre.nunique()) #print 16
+pivottablerowcolumncount = pd.crosstab(movies.genre, movies.content_rating)
+print(pivottablerowcolumncount)
+'''
+content_rating  APPROVED   G  GP  NC-17  NOT RATED  PASSED  PG  PG-13    R  \
+genre                                                                        
+Action                 3   1   1      0          4       1  11     44   67   
+Adventure              3   2   0      0          5       1  21     23   17   
+Animation              3  20   0      0          3       0  25      5    5   
+Biography              1   2   1      0          1       0   6     29   36   
+Comedy                 9   2   1      1         16       3  23     23   73   
+...
+'''
+print(movies.duration.describe())
+'''
+count    979.000000
+mean     120.979571
+std       26.218010
+min       64.000000
+25%      102.000000
+50%      117.000000
+75%      134.000000
+max      242.000000
+Name: duration, dtype: float64
+'''
+print(movies.duration.mean()) #print 120.97957099080695
+countdurationcolumnvalues = movies.duration.value_counts()
+print(countdurationcolumnvalues)
+'''
+112    23
+113    22
+102    20
+101    20
+129    19
+120    18
+...
+'''
