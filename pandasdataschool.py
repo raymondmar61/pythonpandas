@@ -762,3 +762,194 @@ print(drinks.mean(axis=1)) #RM:  confusing Axis 1 is column for removing.  Axis 
 4       81.225
 5       69.975
 '''
+
+#How do I use string methods in pandas-bofaC0IckHo
+import pandas as pd
+orders = pd.read_table("http://bit.ly/chiporders") #Chipotle orders
+print(orders.head())
+'''
+   order_id  quantity                              item_name  \
+0         1         1           Chips and Fresh Tomato Salsa   
+1         1         1                                   Izze   
+2         1         1                       Nantucket Nectar   
+3         1         1  Chips and Tomatillo-Green Chili Salsa   
+4         2         2                           Chicken Bowl   
+
+                                  choice_description item_price  
+0                                                NaN     $2.39   
+1                                       [Clementine]     $3.39   
+2                                            [Apple]     $3.39   
+3                                                NaN     $2.39   
+4  [Tomatillo-Red Chili Salsa (Hot), [Black Beans...    $16.98  
+'''
+print(orders.item_name.str.upper().head())
+'''
+0             CHIPS AND FRESH TOMATO SALSA
+1                                     IZZE
+2                         NANTUCKET NECTAR
+3    CHIPS AND TOMATILLO-GREEN CHILI SALSA
+4                             CHICKEN BOWL
+Name: item_name, dtype: object
+'''
+print(orders.item_name.str.contains("Chicken").head())
+'''
+0    False
+1    False
+2    False
+3    False
+4     True
+Name: item_name, dtype: bool
+'''
+print(orders[orders.item_name.str.contains("Chicken")]) #Filter orders data frame Chicken in item_name column
+'''
+     order_id  quantity             item_name  \
+4            2         2          Chicken Bowl   
+5            3         1          Chicken Bowl   
+11           6         1  Chicken Crispy Tacos   
+12           6         1    Chicken Soft Tacos   
+13           7         1          Chicken Bowl   
+...
+'''
+#https://pandas.pydata.org/pandas-docs/stable/reference/index.html API Reference Guide https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.html?highlight=series%20str#
+
+print(orders.choice_description.str.replace("[", "").str.replace("]", "")) #remove brackets in choice_description column
+'''
+0                                                     NaN
+1                                              Clementine
+2                                                   Apple
+3                                                     NaN
+4       Tomatillo-Red Chili Salsa (Hot), Black Beans, ...
+'''
+
+#How do I change the data type of a pandas Series-V0AWyzVMf54
+import pandas as pd
+drinks = pd.read_csv("http://bit.ly/drinksbycountry")
+print(drinks.head())
+'''
+       country  beer_servings  spirit_servings  wine_servings  \
+0  Afghanistan              0                0              0   
+1      Albania             89              132             54   
+2      Algeria             25                0             14   
+3      Andorra            245              138            312   
+4       Angola            217               57             45   
+
+   total_litres_of_pure_alcohol continent  
+0                           0.0      Asia  
+1                           4.9    Europe  
+2                           0.7    Africa  
+3                          12.4    Europe  
+4                           5.9    Africa  
+'''
+print(drinks.dtypes)
+'''
+country                          object
+beer_servings                     int64
+spirit_servings                   int64
+wine_servings                     int64
+total_litres_of_pure_alcohol    float64
+continent                        object
+dtype: object
+'''
+drinks["beer_servings"] = drinks.beer_servings.astype(float)  #change data type beer_servings column from int64 to float
+print(drinks.dtypes)
+'''
+country                          object
+beer_servings                   float64
+spirit_servings                   int64
+wine_servings                     int64
+total_litres_of_pure_alcohol    float64
+continent                        object
+dtype: object
+'''
+drinkschangedatatype = pd.read_csv("http://bit.ly/drinksbycountry", dtype={"beer_servings": float})
+print(drinkschangedatatype.dtypes)
+'''
+country                          object
+beer_servings                   float64
+spirit_servings                   int64
+wine_servings                     int64
+total_litres_of_pure_alcohol    float64
+continent                        object
+dtype: object
+'''
+orders = pd.read_table("http://bit.ly/chiporders")
+print(orders.head())
+'''
+   order_id  quantity                              item_name  \
+0         1         1           Chips and Fresh Tomato Salsa   
+1         1         1                                   Izze   
+2         1         1                       Nantucket Nectar   
+3         1         1  Chips and Tomatillo-Green Chili Salsa   
+4         2         2                           Chicken Bowl   
+
+                                  choice_description item_price  
+0                                                NaN     $2.39   
+1                                       [Clementine]     $3.39   
+2                                            [Apple]     $3.39   
+3                                                NaN     $2.39   
+4  [Tomatillo-Red Chili Salsa (Hot), [Black Beans...    $16.98  
+'''
+print(orders.dtypes)
+'''
+order_id               int64
+quantity               int64
+item_name             object
+choice_description    object
+item_price            object
+dtype: object
+'''
+orders["item_price"] = orders.item_price.str.replace("$", "")
+print(orders.head())
+'''
+   order_id  quantity                              item_name  \
+0         1         1           Chips and Fresh Tomato Salsa   
+1         1         1                                   Izze   
+2         1         1                       Nantucket Nectar   
+3         1         1  Chips and Tomatillo-Green Chili Salsa   
+4         2         2                           Chicken Bowl   
+
+                                  choice_description item_price  
+0                                                NaN      2.39   
+1                                       [Clementine]      3.39   
+2                                            [Apple]      3.39   
+3                                                NaN      2.39   
+4  [Tomatillo-Red Chili Salsa (Hot), [Black Beans...     16.98  
+'''
+print(orders.dtypes)
+'''
+order_id               int64
+quantity               int64
+item_name             object
+choice_description    object
+item_price            object
+dtype: object
+'''
+orders["item_price"] = orders.item_price.astype(float)
+print(orders.dtypes)
+'''
+order_id                int64
+quantity                int64
+item_name              object
+choice_description     object
+item_price            float64
+dtype: object
+'''
+print(orders.item_price.mean()) #print 7.464335785374297
+print(orders.item_name.str.contains("Chicken").head())
+'''
+0    False
+1    False
+2    False
+3    False
+4     True
+Name: item_name, dtype: bool
+'''
+print(orders.item_name.str.contains("Chicken").astype(int).head())
+'''
+0    0
+1    0
+2    0
+3    0
+4    1
+Name: item_name, dtype: int64
+'''
