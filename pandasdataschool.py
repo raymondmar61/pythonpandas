@@ -1267,3 +1267,415 @@ print(ufo.tail())
 18239  Eagle River             RED          LIGHT    WI  12/31/2000 23:45
 18240         Ybor             NaN           OVAL    FL  12/31/2000 23:59
 '''
+
+#What do I need to know about the pandas index (Part 1)-OYZNk7Z9s6I
+drinks = pd.read_csv("http://bit.ly/drinksbycountry")
+print(drinks.head())
+'''
+       country  beer_servings  spirit_servings  wine_servings  \
+0  Afghanistan              0                0              0   
+1      Albania             89              132             54   
+2      Algeria             25                0             14   
+3      Andorra            245              138            312   
+4       Angola            217               57             45   
+
+   total_litres_of_pure_alcohol continent  
+0                           0.0      Asia  
+1                           4.9    Europe  
+2                           0.7    Africa  
+3                          12.4    Europe  
+4                           5.9    Africa  
+'''
+print(drinks.index) #print RangeIndex(start=0, stop=193, step=1)
+print(drinks.columns) #print Index(['country', 'beer_servings', 'spirit_servings', 'wine_servings', 'total_litres_of_pure_alcohol', 'continent'], dtype='object')
+print(drinks.shape) #print (193, 6)
+nocolumnheaderseperatorpipe = pd.read_table("http://bit.ly/movieusers", header=None, sep="|")
+print(nocolumnheaderseperatorpipe.head())
+'''
+   0   1  2           3      4
+0  1  24  M  technician  85711
+1  2  53  F       other  94043
+2  3  23  M      writer  32067
+3  4  24  M  technician  43537
+4  5  33  F       other  15213
+'''
+continentsouthamerica = drinks[drinks.continent == "South America"]
+print(continentsouthamerica.head())
+'''
+      country  beer_servings  spirit_servings  wine_servings  \
+6   Argentina            193               25            221   
+20    Bolivia            167               41              8   
+23     Brazil            245              145             16   
+35      Chile            130              124            172   
+37   Colombia            159               76              3   
+
+    total_litres_of_pure_alcohol      continent  
+6                            8.3  South America  
+20                           3.8  South America  
+23                           7.2  South America  
+35                           7.6  South America  
+37                           4.2  South America 
+'''
+row23columnbeerservings = drinks.loc[23, "beer_servings"]
+print(row23columnbeerservings) #print 245
+# indexcolumncountry = drinks.set_index("country", inplace=True)
+# print(indexcolumncountry) #print None
+drinks.set_index("country", inplace=True) #Use country column as the index
+print(drinks.head())
+'''
+             beer_servings  spirit_servings  wine_servings  \
+country                                                      
+Afghanistan              0                0              0   
+Albania                 89              132             54   
+Algeria                 25                0             14   
+Andorra                245              138            312   
+Angola                 217               57             45   
+
+             total_litres_of_pure_alcohol continent  
+country                                              
+Afghanistan                           0.0      Asia  
+Albania                               4.9    Europe  
+Algeria                               0.7    Africa  
+Andorra                              12.4    Europe  
+Angola                                5.9    Africa  
+'''
+print(drinks.index)
+'''
+Index(['Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola',
+       'Antigua & Barbuda', 'Argentina', 'Armenia', 'Australia', 'Austria',
+       ...
+       'Tanzania', 'USA', 'Uruguay', 'Uzbekistan', 'Vanuatu', 'Venezuela',
+       'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe'],
+      dtype='object', name='country', length=193)
+'''
+print(drinks.columns) #print Index(['beer_servings', 'spirit_servings', 'wine_servings', 'total_litres_of_pure_alcohol', 'continent'], dtype='object').  RM:  country column is no longer a column
+print(drinks.shape) #print (193, 5)
+brazilbeerservings = drinks.loc["Brazil", "beer_servings"]
+print(brazilbeerservings) #print 245
+drinks.index.name = None #clear the index name
+print(drinks.head())
+'''
+             beer_servings  spirit_servings  wine_servings  \
+Afghanistan              0                0              0   
+Albania                 89              132             54   
+Algeria                 25                0             14   
+Andorra                245              138            312   
+Angola                 217               57             45   
+
+             total_litres_of_pure_alcohol continent  
+Afghanistan                           0.0      Asia  
+Albania                               4.9    Europe  
+Algeria                               0.7    Africa  
+Andorra                              12.4    Europe  
+Angola                                5.9    Africa  
+'''
+drinks.index.name = "country" #Needed to reset index name back to country from drinks.index.name = None
+drinks.reset_index(inplace=True) #Set default index default
+print(drinks.head())
+'''
+       country  beer_servings  spirit_servings  wine_servings  \
+0  Afghanistan              0                0              0   
+1      Albania             89              132             54   
+2      Algeria             25                0             14   
+3      Andorra            245              138            312   
+4       Angola            217               57             45   
+
+   total_litres_of_pure_alcohol continent  
+0                           0.0      Asia  
+1                           4.9    Europe  
+2                           0.7    Africa  
+3                          12.4    Europe  
+4                           5.9    Africa  
+'''
+print(drinks.describe())
+'''
+       beer_servings  spirit_servings  wine_servings  \
+count     193.000000       193.000000     193.000000   
+mean      106.160622        80.994819      49.450777   
+std       101.143103        88.284312      79.697598   
+min         0.000000         0.000000       0.000000   
+25%        20.000000         4.000000       1.000000   
+50%        76.000000        56.000000       8.000000   
+75%       188.000000       128.000000      59.000000   
+max       376.000000       438.000000     370.000000   
+
+       total_litres_of_pure_alcohol  
+count                    193.000000  
+mean                       4.717098  
+std                        3.773298  
+min                        0.000000  
+25%                        1.300000  
+50%                        4.200000  
+75%                        7.200000  
+max                       14.400000  
+'''
+print(drinks.describe().index) #print Index(['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max'], dtype='object')
+print(drinks.describe().columns) #print Index(['beer_servings', 'spirit_servings', 'wine_servings', 'total_litres_of_pure_alcohol'], dtype='object')
+print(drinks.describe().loc["25%", "beer_servings"]) #print 20.0
+
+#What do I need to know about the pandas index (Part 1)-OYZNk7Z9s6I
+drinks = pd.read_csv("http://bit.ly/drinksbycountry")
+print(drinks.head())
+'''
+       country  beer_servings  spirit_servings  wine_servings  \
+0  Afghanistan              0                0              0   
+1      Albania             89              132             54   
+2      Algeria             25                0             14   
+3      Andorra            245              138            312   
+4       Angola            217               57             45   
+
+   total_litres_of_pure_alcohol continent  
+0                           0.0      Asia  
+1                           4.9    Europe  
+2                           0.7    Africa  
+3                          12.4    Europe  
+4                           5.9    Africa  
+'''
+continentsdatacolumn = drinks.continent.head()
+print(continentsdatacolumn)
+'''
+0      Asia
+1    Europe
+2    Africa
+3    Europe
+4    Africa
+Name: continent, dtype: object
+'''
+drinks.set_index("country", inplace=True)
+print(drinks.head())
+continentsdatacolumncountryindex = drinks.continent.head()
+print(continentsdatacolumncountryindex)
+'''
+country
+Afghanistan      Asia
+Albania        Europe
+Algeria        Africa
+Andorra        Europe
+Angola         Africa
+Name: continent, dtype: object
+'''
+print(drinks.continent.value_counts())
+'''
+Africa           53
+Europe           45
+Asia             44
+North America    23
+Oceania          16
+South America    12
+Name: continent, dtype: int64
+'''
+print(drinks.continent.value_counts().index) #print Index(['Africa', 'Europe', 'Asia', 'North America', 'Oceania', 'South America'], dtype='object')
+print(drinks.continent.value_counts().values) #print [53 45 44 23 16 12]
+print(drinks.continent.value_counts()["Africa"]) #print 53
+sortcontinentscount = drinks.continent.value_counts().sort_values()
+print(sortcontinentscount)
+'''
+South America    12
+Oceania          16
+North America    23
+Asia             44
+Europe           45
+Africa           53
+Name: continent, dtype: int64
+'''
+sortcontinentindex = drinks.continent.value_counts().sort_index()
+print(sortcontinentindex)
+'''
+Africa           53
+Asia             44
+Europe           45
+North America    23
+Oceania          16
+South America    12
+Name: continent, dtype: int64
+'''
+createpandasseries = pd.Series([3000000, 85000], index=["Albania", "Andorra"], name="population")  #RM:  it seems pd.Series good for index column and one data column
+print(createpandasseries)
+'''
+Albania    3000000
+Andorra      85000
+Name: population, dtype: int64
+'''
+multipletwodatasetsmatchindex = drinks.beer_servings * createpandasseries
+print(multipletwodatasetsmatchindex)
+'''
+Afghanistan                     NaN
+Albania                 267000000.0
+Algeria                         NaN
+Andorra                  20825000.0
+Angola                          NaN
+Antigua & Barbuda               NaN
+Argentina                       NaN
+...
+Zambia                          NaN
+Zimbabwe                        NaN
+Length: 193, dtype: float64
+'''
+combinetwodatasetsautomaticallymatchindex = pd.concat([drinks, createpandasseries], axis=1)
+print(combinetwodatasetsautomaticallymatchindex.head())
+'''
+             beer_servings  spirit_servings  wine_servings  \
+Afghanistan              0                0              0   
+Albania                 89              132             54   
+Algeria                 25                0             14   
+Andorra                245              138            312   
+Angola                 217               57             45   
+
+             total_litres_of_pure_alcohol continent  population  
+Afghanistan                           0.0      Asia         NaN  
+Albania                               4.9    Europe   3000000.0  
+Algeria                               0.7    Africa         NaN  
+Andorra                              12.4    Europe     85000.0  
+Angola                                5.9    Africa         NaN  
+'''
+
+#How do I select multiple rows and columns from a pandas DataFrame-xvpNA7bC8cs
+ufo = pd.read_csv("http://bit.ly/uforeports")
+print(ufo.head(3))
+'''
+          City Colors Reported Shape Reported State             Time
+0       Ithaca             NaN       TRIANGLE    NY   6/1/1930 22:00
+1  Willingboro             NaN          OTHER    NJ  6/30/1930 20:00
+2      Holyoke             NaN           OVAL    CO  2/15/1931 14:00
+'''
+#Filter rows by index and filter columns by column name.  .loc(filter row, filter column)  Defualt is .loc(filter row) without comma means all columsn are returned.  loc is inclusive in range numbers.
+allcolumnsinrowzero = ufo.loc[0, :]
+print(allcolumnsinrowzero)
+'''
+City                       Ithaca
+Colors Reported               NaN
+Shape Reported           TRIANGLE
+State                          NY
+Time               6/1/1930 22:00
+Name: 0, dtype: object
+'''
+firstthreerows = ufo.loc[0:2, :] #ufo.loc[[0, 1, 2], :] also works
+print(firstthreerows)
+'''
+          City Colors Reported Shape Reported State             Time
+0       Ithaca             NaN       TRIANGLE    NY   6/1/1930 22:00
+1  Willingboro             NaN          OTHER    NJ  6/30/1930 20:00
+2      Holyoke             NaN           OVAL    CO  2/15/1931 14:00
+'''
+citycolumn = ufo.loc[:, "City"]
+print(citycolumn.head(6))
+'''
+0                  Ithaca
+1             Willingboro
+2                 Holyoke
+3                 Abilene
+4    New York Worlds Fair
+5             Valley City
+Name: City, dtype: object
+'''
+statecitycolumn = ufo.loc[:, ["State", "City"]]
+print(statecitycolumn.head(3))
+'''
+  State         City
+0    NY       Ithaca
+1    NJ  Willingboro
+2    CO      Holyoke
+'''
+citytostatecolumns = ufo.loc[:, "City":"State"]
+print(citytostatecolumns.head(3))
+'''
+          City Colors Reported Shape Reported State
+0       Ithaca             NaN       TRIANGLE    NY
+1  Willingboro             NaN          OTHER    NJ
+2      Holyoke             NaN           OVAL    CO
+'''
+citytostatecolumnsthreerows = ufo.loc[0:2, "City":"State"]
+print(citytostatecolumnsthreerows)
+'''
+          City Colors Reported Shape Reported State
+0       Ithaca             NaN       TRIANGLE    NY
+1  Willingboro             NaN          OTHER    NJ
+2      Holyoke             NaN           OVAL    CO
+'''
+print(ufo[ufo.City == "Oakland"].head(6))
+'''
+         City Colors Reported Shape Reported State              Time
+1694  Oakland             NaN          CIGAR    CA   7/21/1968 14:00
+2144  Oakland             NaN           DISK    CA    8/19/1971 0:00
+4686  Oakland             NaN          LIGHT    MD     6/1/1982 0:00
+7293  Oakland             NaN          LIGHT    CA   3/28/1994 17:00
+8488  Oakland             NaN            NaN    CA   8/10/1995 21:45
+8768  Oakland             NaN            NaN    CA  10/10/1995 22:40
+'''
+oaklandcity = ufo.loc[ufo.City == "Oakland", :]
+print(oaklandcity.head(6))
+'''
+         City Colors Reported Shape Reported State              Time
+1694  Oakland             NaN          CIGAR    CA   7/21/1968 14:00
+2144  Oakland             NaN           DISK    CA    8/19/1971 0:00
+4686  Oakland             NaN          LIGHT    MD     6/1/1982 0:00
+7293  Oakland             NaN          LIGHT    CA   3/28/1994 17:00
+8488  Oakland             NaN            NaN    CA   8/10/1995 21:45
+8768  Oakland             NaN            NaN    CA  10/10/1995 22:40
+'''
+#The i in iloc means integer.  Integer position as index position.  iloc is exclusive for iloc ranges.
+firstcolumnandthirdcolumn = ufo.iloc[:, [0, 3]]
+print(firstcolumnandthirdcolumn.head(3))
+'''
+          City State
+0       Ithaca    NY
+1  Willingboro    NJ
+2      Holyoke    CO
+'''
+firsttofourthcolumn = ufo.iloc[:, 0:4]
+print(firsttofourthcolumn.head(3))
+'''
+          City Colors Reported Shape Reported State
+0       Ithaca             NaN       TRIANGLE    NY
+1  Willingboro             NaN          OTHER    NJ
+2      Holyoke             NaN           OVAL    CO
+'''
+firsttothirdrows = ufo.iloc[0:3, :]
+print(firsttothirdrows)
+'''
+          City Colors Reported Shape Reported State             Time
+0       Ithaca             NaN       TRIANGLE    NY   6/1/1930 22:00
+1  Willingboro             NaN          OTHER    NJ  6/30/1930 20:00
+2      Holyoke             NaN           OVAL    CO  2/15/1931 14:00
+'''
+drinks = pd.read_csv("http://bit.ly/drinksbycountry", index_col="country")
+print(drinks.head())
+'''
+             beer_servings  spirit_servings  wine_servings  \
+country                                                      
+Afghanistan              0                0              0   
+Albania                 89              132             54   
+Algeria                 25                0             14   
+Andorra                245              138            312   
+Angola                 217               57             45   
+
+             total_litres_of_pure_alcohol continent  
+country                                              
+Afghanistan                           0.0      Asia  
+Albania                               4.9    Europe  
+Algeria                               0.7    Africa  
+Andorra                              12.4    Europe  
+Angola                                5.9    Africa
+'''
+#integer as index is treated as labels is inclusive.  RM:  instructor recommends ix as a last resort
+albaniabeerservings = drinks.ix["Albania", 0]
+print(albaniabeerservings) #print 89
+albaniabeerservings = drinks.ix[1, "beer_servings"]
+print(albaniabeerservings) #print 89
+albaniatoandorrabeerandspirit = drinks.ix["Albania":"Andorra", 0:2]
+print(albaniatoandorrabeerandspirit)
+'''
+         beer_servings  spirit_servings
+country                                
+Albania             89              132
+Algeria             25                0
+Andorra            245              138
+'''
+first3rowsfirst2columns = ufo.ix[0:2, 0:2]
+print(first3rowsfirst2columns)
+'''
+          City Colors Reported
+0       Ithaca             NaN
+1  Willingboro             NaN
+2      Holyoke             NaN
+'''
