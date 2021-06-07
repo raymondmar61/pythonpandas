@@ -1679,3 +1679,75 @@ print(first3rowsfirst2columns)
 1  Willingboro             NaN
 2      Holyoke             NaN
 '''
+
+#When should I use the 'inplace' parameter in pandas-XaCSdr7pPmY
+ufo = pd.read_csv("http://bit.ly/uforeports")
+print(ufo.shape) #print (18241, 5)
+print(ufo.head())
+'''
+                   City Colors Reported Shape Reported State             Time
+0                Ithaca             NaN       TRIANGLE    NY   6/1/1930 22:00
+1           Willingboro             NaN          OTHER    NJ  6/30/1930 20:00
+2               Holyoke             NaN           OVAL    CO  2/15/1931 14:00
+3               Abilene             NaN           DISK    KS   6/1/1931 13:00
+4  New York Worlds Fair             NaN          LIGHT    NY  4/18/1933 19:00
+'''
+print(ufo.drop("City", axis=1).head()) #delete column remove column from view.  inplace=False is False by default.
+'''
+  Colors Reported Shape Reported State             Time
+0             NaN       TRIANGLE    NY   6/1/1930 22:00
+1             NaN          OTHER    NJ  6/30/1930 20:00
+2             NaN           OVAL    CO  2/15/1931 14:00
+3             NaN           DISK    KS   6/1/1931 13:00
+4             NaN          LIGHT    NY  4/18/1933 19:00
+'''
+print(ufo.head())  #RM print(ufo.drop("City", axis=1).head()) didn't delete City column permanently.  Reason is drop method inplace=False is False by default.  Method inplace=False means operation doesn't affect the underlying data or underlying source by default.  inplace=True operation does affect the underlying data or underlying source.
+'''
+                   City Colors Reported Shape Reported State             Time
+0                Ithaca             NaN       TRIANGLE    NY   6/1/1930 22:00
+1           Willingboro             NaN          OTHER    NJ  6/30/1930 20:00
+2               Holyoke             NaN           OVAL    CO  2/15/1931 14:00
+3               Abilene             NaN           DISK    KS   6/1/1931 13:00
+4  New York Worlds Fair             NaN          LIGHT    NY  4/18/1933 19:00
+'''
+inplacetrue = ufo.drop("City", axis=1, inplace=True)
+print(inplacetrue) #print None
+#print(inplacetrue.head()) #print AttributeError: 'NoneType' object has no attribute 'head'
+#RM:  I looked at past YouTube videos.  Quick search I didn't find any .drop saved to a variable.
+ufodeletecitycolumn = pd.read_csv("http://bit.ly/uforeports")
+ufodeletecitycolumn.drop("City", axis=1, inplace=True)
+print(ufodeletecitycolumn.head())
+'''
+  Colors Reported Shape Reported State             Time
+0             NaN       TRIANGLE    NY   6/1/1930 22:00
+1             NaN          OTHER    NJ  6/30/1930 20:00
+2             NaN           OVAL    CO  2/15/1931 14:00
+3             NaN           DISK    KS   6/1/1931 13:00
+4             NaN          LIGHT    NY  4/18/1933 19:00
+'''
+dropnarows = ufodeletecitycolumn.dropna(how="any") #delete rows with na value NaN value
+print(dropnarows.head())
+'''
+   Colors Reported Shape Reported State             Time
+12             RED         SPHERE    SC  6/30/1939 20:00
+19             RED          OTHER    AK  4/30/1943 23:00
+36             RED      FORMATION    VA   7/10/1945 1:30
+44           GREEN         SPHERE    CA  6/30/1946 19:00
+82            BLUE        CHEVRON    CA  7/15/1947 21:00
+'''
+print(ufodeletecitycolumn.dropna(how="any").shape) #print (2490, 4)  #RM:  not saving delete rows with na value NaN value to a variable.  Also inplace=False is default
+print(ufodeletecitycolumn.shape) #print (18241, 4) #RM:  inplace=False is default delete rows with na value NaN value didn't permanently affect the data source
+#Other Pandas with inplace=False default are .rename(), .sort_values(), .set_index()
+#RM:  instructor assigns a variable or an assignment statement which is what I do.  One less worry to change inplace=False to inplace=True.  Instructor says possible bigger file size and slower performance for huge data sets.  inplace=True no guarantee more efficient performance.
+assignvariablesetindextotime = ufodeletecitycolumn.set_index("Time")
+print(assignvariablesetindextotime.tail())
+'''
+                 Colors Reported Shape Reported State
+Time                                                 
+12/31/2000 23:00             NaN       TRIANGLE    IL
+12/31/2000 23:00             NaN           DISK    IA
+12/31/2000 23:45             NaN            NaN    WI
+12/31/2000 23:45             RED          LIGHT    WI
+12/31/2000 23:59             NaN           OVAL    FL
+'''
+#Bonus tip.  Take advantage of inplace=False is default for exploring Pandas methods.  Experiment.  Trial and error.
