@@ -1751,3 +1751,192 @@ Time
 12/31/2000 23:59             NaN           OVAL    FL
 '''
 #Bonus tip.  Take advantage of inplace=False is default for exploring Pandas methods.  Experiment.  Trial and error.
+
+#How do I make my pandas DataFrame smaller and faster-wDYDYGyN_cw
+drinks = pd.read_csv("http://bit.ly/drinksbycountry")
+print(drinks.head())
+'''
+       country  beer_servings  spirit_servings  wine_servings  \
+0  Afghanistan              0                0              0   
+1      Albania             89              132             54   
+2      Algeria             25                0             14   
+3      Andorra            245              138            312   
+4       Angola            217               57             45   
+
+   total_litres_of_pure_alcohol continent  
+0                           0.0      Asia  
+1                           4.9    Europe  
+2                           0.7    Africa  
+3                          12.4    Europe  
+4                           5.9    Africa  
+'''
+print(drinks.info())
+'''
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 193 entries, 0 to 192
+Data columns (total 6 columns):
+country                         193 non-null object
+beer_servings                   193 non-null int64
+spirit_servings                 193 non-null int64
+wine_servings                   193 non-null int64
+total_litres_of_pure_alcohol    193 non-null float64
+continent                       193 non-null object
+dtypes: float64(1), int64(3), object(2)
+memory usage: 9.1+ KB
+None
+'''
+actualmemorysize = drinks.info(memory_usage="deep")
+print(actualmemorysize)
+'''
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 193 entries, 0 to 192
+Data columns (total 6 columns):
+country                         193 non-null object
+beer_servings                   193 non-null int64
+spirit_servings                 193 non-null int64
+wine_servings                   193 non-null int64
+total_litres_of_pure_alcohol    193 non-null float64
+continent                       193 non-null object
+dtypes: float64(1), int64(3), object(2)
+memory usage: 30.4 KB
+None
+'''
+print(drinks.memory_usage())
+'''
+Index                             80
+country                         1544
+beer_servings                   1544
+spirit_servings                 1544
+wine_servings                   1544
+total_litres_of_pure_alcohol    1544
+continent                       1544
+dtype: int64
+'''
+actualmemorysizecolumns = drinks.memory_usage(deep=True)
+print(actualmemorysizecolumns)
+'''
+Index                              80
+country                         12588
+beer_servings                    1544
+spirit_servings                  1544
+wine_servings                    1544
+total_litres_of_pure_alcohol     1544
+continent                       12332
+dtype: int64
+'''
+print(actualmemorysizecolumns.sum()) #print 31176
+#How do we reduce the file size?  Convert strings to integers.  Let's see the continent column.
+uniquecontinents = sorted(drinks.continent.unique())
+print(uniquecontinents) #print ['Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America']
+#Assign an integer to the continent.  Like  a lookup table.
+drinks["continent"] = drinks.continent.astype("category") #Convert continent column datatype from object to category to reduce memeory size and assign an integer to continent values
+print(drinks.dtypes)
+'''
+country                           object
+beer_servings                      int64
+spirit_servings                    int64
+wine_servings                      int64
+total_litres_of_pure_alcohol     float64
+continent                       category
+dtype: object
+'''
+print(drinks.continent.head())
+'''
+0      Asia
+1    Europe
+2    Africa
+3    Europe
+4    Africa
+Name: continent, dtype: category
+Categories (6, object): [Africa, Asia, Europe, North America, Oceania, South America]
+'''
+proofcontinentisintegers = drinks.continent.cat.codes.head()
+print(proofcontinentisintegers)
+'''
+0    1
+1    2
+2    0
+3    2
+4    0
+dtype: int8
+'''
+print(drinks.memory_usage(deep=True))  #continent memory size reduced from 12332 to 744
+'''
+Index                              80
+country                         12588
+beer_servings                    1544
+spirit_servings                  1544
+wine_servings                    1544
+total_litres_of_pure_alcohol     1544
+continent                         744
+dtype: int64
+'''
+drinks["country"] = drinks.country.astype("category") #Convert country column datatype from object to category to reduce memeory size and assign an integer to country values
+print(drinks.memory_usage(deep=True))  #country memory size increased from 12588 to 18094.  Reason is the category as a lookup table there are too many values in country column.
+'''
+Index                              80
+country                         18094
+beer_servings                    1544
+spirit_servings                  1544
+wine_servings                    1544
+total_litres_of_pure_alcohol     1544
+continent                         744
+dtype: int64
+
+'''
+bonusdataframe = pd.DataFrame({"ID": [100, 101, 102, 103], "quality": ["good", "very good", "good", "excellent"]})
+print(bonusdataframe)
+'''
+    ID    quality
+0  100       good
+1  101  very good
+2  102       good
+3  103  excellent
+'''
+sortbonusdataframequality = bonusdataframe.sort_values("quality")
+print(sortbonusdataframequality)
+'''
+    ID    quality
+3  103  excellent
+0  100       good
+2  102       good
+1  101  very good
+'''
+bonusdataframe["quality"] = bonusdataframe.quality.astype("category", categories=["good", "very good", "excellent"], ordered=True) #Convert quality column datatype from object to category to custom sort
+'''
+yywork.py:152: FutureWarning: specifying 'categories' or 'ordered' in .astype() is deprecated; pass a CategoricalDtype instead
+  bonusdataframe["quality"] = bonusdataframe.quality.astype("category", categories=["good", "very good", "excellent"], ordered=True) #Convert quality column datatype from object to category to custom sort
+'''
+print(bonusdataframe)
+'''
+    ID    quality
+0  100       good
+1  101  very good
+2  102       good
+3  103  excellent
+'''
+print(bonusdataframe.quality) #Confirm use comparison operators for string comparison operators
+'''
+0         good
+1    very good
+2         good
+3    excellent
+Name: quality, dtype: category
+Categories (3, object): [good < very good < excellent]
+'''
+printcustomsortqualitycolumn = bonusdataframe.sort_values("quality")
+print(printcustomsortqualitycolumn)
+'''
+    ID    quality
+0  100       good
+2  102       good
+1  101  very good
+3  103  excellent
+'''
+returncolumnsgreaterthangood = bonusdataframe.loc[bonusdataframe.quality > "good", :]
+print(returncolumnsgreaterthangood)
+'''
+    ID    quality
+1  101  very good
+3  103  excellent
+'''
