@@ -367,10 +367,10 @@ print(movies.head())
 print(movies.shape) #print (979, 6)
 booleanslist = []
 for movieslength in movies.duration:
-  if movieslength >= 200:
-    booleanslist.append(True)
-  else:
-    booleanslist.append(False)
+    if movieslength >= 200:
+        booleanslist.append(True)
+    else:
+        booleanslist.append(False)
 print(booleanslist[0:5]) #print [False, False, True, False, False]
 print(len(booleanslist)) #print 979
 long200movies = pd.Series(booleanslist)
@@ -565,8 +565,8 @@ print(ufofirst3rows)
 #How do Dataframes and Series work with regard to selecting individual entries and iteration (for x in userdata:)?  Answer is Pandas series is iterable just like a Python list.
 ufofirst3rows = pd.read_csv("http://bit.ly/uforeports", nrows=3)
 for cityonly in ufofirst3rows.City:
-  print(cityonly)
-  '''
+    print(cityonly)
+    '''
     Ithaca
     Willingboro
     Holyoke
@@ -574,8 +574,8 @@ for cityonly in ufofirst3rows.City:
 #Iterate a Pandas dataframe Pandas has methods.
 ufofirst3rows = pd.read_csv("http://bit.ly/uforeports", nrows=3)
 for index, row in ufofirst3rows.iterrows():
-  print(index, row.City, row.State)
-  '''
+    print(index, row.City, row.State)
+    '''
     0 Ithaca NY
     1 Willingboro NJ
     2 Holyoke CO
@@ -1940,3 +1940,557 @@ print(returncolumnsgreaterthangood)
 1  101  very good
 3  103  excellent
 '''
+
+#How do I use pandas with scikit-learn to create Kaggle submissions-ylRlGCtAtiE
+titanicdata = pd.read_csv("http://bit.ly/kaggletrain")
+print(titanicdata.head())
+'''
+   PassengerId  Survived  Pclass  \
+0            1         0       3   
+1            2         1       1   
+2            3         1       3   
+3            4         1       1   
+4            5         0       3   
+
+                                                Name     Sex   Age  SibSp  \
+0                            Braund, Mr. Owen Harris    male  22.0      1   
+1  Cumings, Mrs. John Bradley (Florence Briggs Th...  female  38.0      1   
+2                             Heikkinen, Miss. Laina  female  26.0      0   
+3       Futrelle, Mrs. Jacques Heath (Lily May Peel)  female  35.0      1   
+4                           Allen, Mr. William Henry    male  35.0      0   
+
+   Parch            Ticket     Fare Cabin Embarked  
+0      0         A/5 21171   7.2500   NaN        S  
+1      0          PC 17599  71.2833   C85        C  
+2      0  STON/O2. 3101282   7.9250   NaN        S  
+3      0            113803  53.1000  C123        S  
+4      0            373450   8.0500   NaN        S 
+'''
+featurecolumns = ["Pclass", "Parch"]
+x = titanicdata.loc[:, featurecolumns]  #all rows from Pclass column and Parch column in featurecolumns list
+print(x.shape) #print (891, 2)
+survivors = titanicdata.Survived
+print(survivors.shape) #print (891,)
+# from sklearn.linear_model import LogisticRegression
+# logreg = LogisticRegression()
+# logreg.fit(x, survivors)
+# print(logreg.fit(x, survivors))
+#RM:  I don't have sklearn.linear_model
+
+#More of your pandas questions answered!-oH3wYKvwpJ8
+
+#How do you read the pandas documentation.  YouTuber says Google it instead of going to the Pandas documents and searching there.  Search Pandas *function* in Google; for example, pandas read_csv.  Make sure choose the function with the latest version.  If you see a function pandas.read_csv, it's a top level function.  You type pd.read_csv to run the read_csv function.  The code inside the parenthesis is the parameters.  Parameters without a default value means these parameters are required.
+#Another example is search for pandas drop.  pandas.DataFrame.drop is the top Google result.  If you see a pandas.DataFrame, it means the drop is a data frame method.  For example, pandas.ufo.drop for which ufo is a data frame.  Not pd.drop.  Similarily, search pandas value_counts.  pandas.Series.value_counts is the top Google result.  value_counts is a series method.
+
+#ufo.isnull() and pd.isnull(ufo) returns the same results.  ufo.isnull() is calling a function of ufo object.  pd.isnull(ufo) uses ufo object as an argument.  pd.isnull(obj) is a top level function which takes an object as its argument.  isnull() is also a series method as Series.isnull() for which ufo is a series ufo.isnull().  isnull() is also a data frame method as DataFrame.isnull() for which ufo is a data frame ufo.isnull().  There are different ways to use isnull() as a top level method, data frame method, or series method.
+ufo = pd.read_csv("http://bit.ly/uforeports")
+print(ufo.head())
+'''
+                   City Colors Reported Shape Reported State             Time
+0                Ithaca             NaN       TRIANGLE    NY   6/1/1930 22:00
+1           Willingboro             NaN          OTHER    NJ  6/30/1930 20:00
+2               Holyoke             NaN           OVAL    CO  2/15/1931 14:00
+3               Abilene             NaN           DISK    KS   6/1/1931 13:00
+4  New York Worlds Fair             NaN          LIGHT    NY  4/18/1933 19:00
+'''
+print(pd.isnull(ufo).head())  #RM:  ufo is using isnull() as a top level function
+'''
+    City  Colors Reported  Shape Reported  State   Time
+0  False             True           False  False  False
+1  False             True           False  False  False
+2  False             True           False  False  False
+3  False             True           False  False  False
+4  False             True           False  False  False
+'''
+print(ufo.isnull().head())  #RM:  ufo is using isnull() as a method
+'''
+    City  Colors Reported  Shape Reported  State   Time
+0  False             True           False  False  False
+1  False             True           False  False  False
+2  False             True           False  False  False
+3  False             True           False  False  False
+4  False             True           False  False  False
+'''
+
+#Inclusive ranges and exclusive ranges.  0:4 is different in loc and iloc.
+print(ufo.loc[0:4, :])  #print the first 5 rows and all columns.  Label-based indexing is inclusive.
+'''
+                   City Colors Reported Shape Reported State             Time
+0                Ithaca             NaN       TRIANGLE    NY   6/1/1930 22:00
+1           Willingboro             NaN          OTHER    NJ  6/30/1930 20:00
+2               Holyoke             NaN           OVAL    CO  2/15/1931 14:00
+3               Abilene             NaN           DISK    KS   6/1/1931 13:00
+4  New York Worlds Fair             NaN          LIGHT    NY  4/18/1933 19:00
+'''
+print(ufo.iloc[0:4, :])  #print the first 4 rows and all columns.  iloc integer location.  Slicing copied from Numpy.  Positional-based indexing is exclusive.
+'''
+                   City Colors Reported Shape Reported State             Time
+0                Ithaca             NaN       TRIANGLE    NY   6/1/1930 22:00
+1           Willingboro             NaN          OTHER    NJ  6/30/1930 20:00
+2               Holyoke             NaN           OVAL    CO  2/15/1931 14:00
+3               Abilene             NaN           DISK    KS   6/1/1931 13:00
+'''
+print(ufo.loc[:, "City":"State"].head())
+'''
+                   City Colors Reported Shape Reported State
+0                Ithaca             NaN       TRIANGLE    NY
+1           Willingboro             NaN          OTHER    NJ
+2               Holyoke             NaN           OVAL    CO
+3               Abilene             NaN           DISK    KS
+4  New York Worlds Fair             NaN          LIGHT    NY
+'''
+print(ufo.iloc[:, 0:4].head())  #iloc integer location.  Slicing copied from Numpy.
+'''
+                   City Colors Reported Shape Reported State
+0                Ithaca             NaN       TRIANGLE    NY
+1           Willingboro             NaN          OTHER    NJ
+2               Holyoke             NaN           OVAL    CO
+3               Abilene             NaN           DISK    KS
+4  New York Worlds Fair             NaN          LIGHT    NY
+'''
+
+#Random sampling
+threerandomrows = ufo.sample(n=3)
+print(threerandomrows)
+'''
+                  City Colors Reported Shape Reported State              Time
+14887  Apache Junction             NaN          OTHER    AZ  10/19/1999 22:00
+12493           Novato           GREEN       FIREBALL    CA   11/4/1998 22:32
+14147           Denver             NaN          OTHER    CO   8/10/1999 22:30
+'''
+randomstate = ufo.sample(n=3, random_state=42)  #random_state is a reproducibility.  Everytime code is run, the results are the same.  reproducibility is the ability to be reproduced or copied.
+print(randomstate)
+'''
+            City Colors Reported Shape Reported State             Time
+10201  Oceanside          ORANGE          OTHER    CA   5/2/1997 22:00
+11407  Whitefish             NaN            NaN    MT  4/12/1998 23:00
+10342     Renton             NaN           DISK    WA   6/8/1997 19:16
+'''
+fractionrows = ufo.sample(frac=0.75, random_state=99)
+print(fractionrows)  #print 75% of the total rows
+'''
+                    City Colors Reported Shape Reported State  \
+6250           Sunnyvale             NaN          OTHER    CA   
+8656      Corpus Christi             NaN            NaN    TX   
+2729              Mentor             NaN           DISK    OH   
+7348              Wilson             NaN          LIGHT    WI   
+12637             Lowell             NaN         CIRCLE    MA
+...   
+      Time  
+6250    12/16/1989 0:00  
+8656     9/13/1995 0:10  
+2729     8/8/1974 10:00  
+7348      6/1/1994 1:00  
+12637  11/26/1998 10:00  
+'''
+
+#How do I create dummy variables in pandas-0s_1IsROgDc
+#Dummy variables used in machine learning, statistics, and econometrics.  Used as indicator variables.  For example, male is 1, female is 0.  1 and 0 are dummy variables.  In machine learning, dummy variables are used for unordered categorical features.
+trainingdatasettitanic = pd.read_csv("http://bit.ly/kaggletrain")
+print(trainingdatasettitanic.head())
+'''
+   PassengerId  Survived  Pclass  \
+0            1         0       3   
+1            2         1       1   
+2            3         1       3   
+3            4         1       1   
+4            5         0       3   
+
+                                                Name     Sex   Age  SibSp  \
+0                            Braund, Mr. Owen Harris    male  22.0      1   
+1  Cumings, Mrs. John Bradley (Florence Briggs Th...  female  38.0      1   
+2                             Heikkinen, Miss. Laina  female  26.0      0   
+3       Futrelle, Mrs. Jacques Heath (Lily May Peel)  female  35.0      1   
+4                           Allen, Mr. William Henry    male  35.0      0   
+
+   Parch            Ticket     Fare Cabin Embarked  
+0      0         A/5 21171   7.2500   NaN        S  
+1      0          PC 17599  71.2833   C85        C  
+2      0  STON/O2. 3101282   7.9250   NaN        S  
+3      0            113803  53.1000  C123        S  
+4      0            373450   8.0500   NaN        S 
+'''
+trainingdatasettitanic["Sexmale"] = trainingdatasettitanic.Sex.map({"female": 0, "male": 1})  #new column Sexmale assign or map female to 0 and male to 1
+print(trainingdatasettitanic.head())
+'''
+   PassengerId  Survived  Pclass  \
+0            1         0       3   
+1            2         1       1   
+2            3         1       3   
+3            4         1       1   
+4            5         0       3   
+
+                                                Name     Sex   Age  SibSp  \
+0                            Braund, Mr. Owen Harris    male  22.0      1   
+1  Cumings, Mrs. John Bradley (Florence Briggs Th...  female  38.0      1   
+2                             Heikkinen, Miss. Laina  female  26.0      0   
+3       Futrelle, Mrs. Jacques Heath (Lily May Peel)  female  35.0      1   
+4                           Allen, Mr. William Henry    male  35.0      0   
+
+   Parch            Ticket     Fare Cabin Embarked  Sexmale  
+0      0         A/5 21171   7.2500   NaN        S        1  
+1      0          PC 17599  71.2833   C85        C        0  
+2      0  STON/O2. 3101282   7.9250   NaN        S        0  
+3      0            113803  53.1000  C123        S        0  
+4      0            373450   8.0500   NaN        S        1  
+'''
+getdummiestoplevel = pd.get_dummies(trainingdatasettitanic.Sex)  #Faster method to assign or map a column of results.  Create one column for every possible value.  There are two possible values.  One column for each.  For each row, it tells you whether it was female or male putting a one in the appropriate column.
+print(getdummiestoplevel)
+'''
+     female  male
+0         0     1
+1         1     0
+2         1     0
+3         1     0
+4         0     1
+...
+'''
+#Generally speaking, if we have k possible values for a categorial variable. we use k-1.  Want k-1 columns for pd.get_dummies or k-1 dummy variables.  Because it captures all possible information; in other words, we don't need all possible values to return.  If we get all zeroes in a row of columns, then we know the column which is one.  Drop the first column.  Don't need it.  Define the baseline.
+kminusonedropfirstcolumn = pd.get_dummies(trainingdatasettitanic.Sex, prefix="Columnnameprefix").iloc[:, 1:]
+print(kminusonedropfirstcolumn)
+'''
+   Columnnameprefix_male
+0       1
+1       0
+2       0
+3       0
+4       1
+...
+'''
+valuecountembarked = trainingdatasettitanic.Embarked.value_counts()
+print(valuecountembarked)
+'''
+S    644
+C    168
+Q     77
+Name: Embarked, dtype: int64
+'''
+assigndummyvariablestoembarked = pd.get_dummies(trainingdatasettitanic.Embarked, prefix="Embarkedcolumn")
+print(assigndummyvariablestoembarked)
+'''
+  Embarkedcolumn_C  Embarkedcolumn_Q  Embarkedcolumn_S
+0                   0                 0                 1
+1                   1                 0                 0
+2                   0                 0                 1
+3                   0                 0                 1
+4                   0                 0                 1
+...
+'''
+kminusoneassigndummyvariablestoembarked = pd.get_dummies(trainingdatasettitanic.Embarked, prefix="Embarkedcolumn").iloc[:, 1:]  #Embarkedcolumn_C or C result is the baseline.  In other words, if Embarkedcolumn_Q and Embarkedcolumn_S are 0, then Embarkedcolumn_C is 1 like index row 1.
+print(kminusoneassigndummyvariablestoembarked)
+'''
+    Embarkedcolumn_Q  Embarkedcolumn_S
+0                   0                 1
+1                   0                 0
+2                   0                 1
+3                   0                 1
+4                   0                 1
+'''
+trainingdatasettitanic = pd.concat([trainingdatasettitanic, kminusoneassigndummyvariablestoembarked], axis=1)  #add column kminusoneassigndummyvariablestoembarked to trainingdatasettitanic and overwrite original trainingdatasettitanic
+print(trainingdatasettitanic.head())
+'''
+   PassengerId  Survived  Pclass  \
+0            1         0       3   
+1            2         1       1   
+2            3         1       3   
+3            4         1       1   
+4            5         0       3   
+
+                                                Name     Sex   Age  SibSp  \
+0                            Braund, Mr. Owen Harris    male  22.0      1   
+1  Cumings, Mrs. John Bradley (Florence Briggs Th...  female  38.0      1   
+2                             Heikkinen, Miss. Laina  female  26.0      0   
+3       Futrelle, Mrs. Jacques Heath (Lily May Peel)  female  35.0      1   
+4                           Allen, Mr. William Henry    male  35.0      0   
+
+   Parch            Ticket     Fare Cabin Embarked  Sexmale  Embarkedcolumn_Q  \
+0      0         A/5 21171   7.2500   NaN        S        1                 0   
+1      0          PC 17599  71.2833   C85        C        0                 0   
+2      0  STON/O2. 3101282   7.9250   NaN        S        0                 0   
+3      0            113803  53.1000  C123        S        0                 0   
+4      0            373450   8.0500   NaN        S        1                 0   
+
+   Embarkedcolumn_S  
+0                 1  
+1                 0  
+2                 1  
+3                 1  
+4                 1  
+...
+'''
+trainingdatasettitanic = pd.read_csv("http://bit.ly/kaggletrain")
+print(trainingdatasettitanic.head())
+passdataframetogetdummies = pd.get_dummies(trainingdatasettitanic, columns=["Sex", "Embarked"])
+print(passdataframetogetdummies.head())
+'''
+   PassengerId  Survived  Pclass  \
+0            1         0       3   
+1            2         1       1   
+2            3         1       3   
+3            4         1       1   
+4            5         0       3   
+
+                                                Name   Age  SibSp  Parch  \
+0                            Braund, Mr. Owen Harris  22.0      1      0   
+1  Cumings, Mrs. John Bradley (Florence Briggs Th...  38.0      1      0   
+2                             Heikkinen, Miss. Laina  26.0      0      0   
+3       Futrelle, Mrs. Jacques Heath (Lily May Peel)  35.0      1      0   
+4                           Allen, Mr. William Henry  35.0      0      0   
+
+             Ticket     Fare Cabin  Sex_female  Sex_male  Embarked_C  \
+0         A/5 21171   7.2500   NaN           0         1           0   
+1          PC 17599  71.2833   C85           1         0           1   
+2  STON/O2. 3101282   7.9250   NaN           1         0           0   
+3            113803  53.1000  C123           1         0           0   
+4            373450   8.0500   NaN           0         1           0   
+
+   Embarked_Q  Embarked_S  
+0           0           1  
+1           0           0  
+2           0           1  
+3           0           1  
+4           0           1
+...
+'''
+kminusonepassdataframetogetdummies = pd.get_dummies(trainingdatasettitanic, columns=["Sex", "Embarked"], drop_first=True)
+print(kminusonepassdataframetogetdummies.head())
+'''
+   PassengerId  Survived  Pclass  \
+0            1         0       3   
+1            2         1       1   
+2            3         1       3   
+3            4         1       1   
+4            5         0       3   
+
+                                                Name   Age  SibSp  Parch  \
+0                            Braund, Mr. Owen Harris  22.0      1      0   
+1  Cumings, Mrs. John Bradley (Florence Briggs Th...  38.0      1      0   
+2                             Heikkinen, Miss. Laina  26.0      0      0   
+3       Futrelle, Mrs. Jacques Heath (Lily May Peel)  35.0      1      0   
+4                           Allen, Mr. William Henry  35.0      0      0   
+
+             Ticket     Fare Cabin  Sex_male  Embarked_Q  Embarked_S  
+0         A/5 21171   7.2500   NaN         1           0           1  
+1          PC 17599  71.2833   C85         0           0           0  
+2  STON/O2. 3101282   7.9250   NaN         0           0           1  
+3            113803  53.1000  C123         0           0           1  
+4            373450   8.0500   NaN         1           0           1 
+...
+'''
+
+#How do I work with dates and times in pandas-yCgJGsg0Xa4
+ufo = pd.read_csv("http://bit.ly/uforeports")
+print(ufo.head())
+'''
+                   City Colors Reported Shape Reported State             Time
+0                Ithaca             NaN       TRIANGLE    NY   6/1/1930 22:00
+1           Willingboro             NaN          OTHER    NJ  6/30/1930 20:00
+2               Holyoke             NaN           OVAL    CO  2/15/1931 14:00
+3               Abilene             NaN           DISK    KS   6/1/1931 13:00
+4  New York Worlds Fair             NaN          LIGHT    NY  4/18/1933 19:00
+...
+'''
+print(ufo.dtypes)
+'''
+City               object
+Colors Reported    object
+Shape Reported     object
+State              object
+Time               object
+dtype: object
+'''
+print(ufo.Time.str.slice(-5, -3).head())
+'''
+0    22
+1    20
+2    14
+3    13
+4    19
+Name: Time, dtype: object
+'''
+print(ufo.Time.str.slice(-5, -3).astype(int).head())
+'''
+0    22
+1    20
+2    14
+3    13
+4    19
+Name: Time, dtype: int64
+'''
+uforeplacetimecolumnnewnewnametimecolumn = pd.read_csv("http://bit.ly/uforeports")
+uforeplacetimecolumnnewnewnametimecolumn["Newnametimecolumn"] = uforeplacetimecolumnnewnewnametimecolumn["Time"]
+uforeplacetimecolumnnewnewnametimecolumn["Newnametimecolumn"] = pd.to_datetime(uforeplacetimecolumnnewnewnametimecolumn.Newnametimecolumn)
+print(uforeplacetimecolumnnewnewnametimecolumn.head())
+'''
+                   City Colors Reported Shape Reported State  \
+0                Ithaca             NaN       TRIANGLE    NY   
+1           Willingboro             NaN          OTHER    NJ   
+2               Holyoke             NaN           OVAL    CO   
+3               Abilene             NaN           DISK    KS   
+4  New York Worlds Fair             NaN          LIGHT    NY   
+
+                 Newnametimecolumn  
+0 1930-06-01 22:00:00  
+1 1930-06-30 20:00:00  
+2 1931-02-15 14:00:00  
+3 1931-06-01 13:00:00  
+4 1933-04-18 19:00:00  
+...
+'''
+print(uforeplacetimecolumnnewnewnametimecolumn.dtypes)
+'''
+City                       object
+Colors Reported            object
+Shape Reported             object
+State                      object
+Newnametimecolumn          datetime64[ns]
+dtype: object
+'''
+extracthour = uforeplacetimecolumnnewnewnametimecolumn.Newnametimecolumn.dt.hour
+print(extracthour.head())
+'''
+0    22
+1    20
+2    14
+3    13
+4    19
+Name: Newnametimecolumn, dtype: int64
+'''
+extractweekdayasname = uforeplacetimecolumnnewnewnametimecolumn.Newnametimecolumn.dt.weekday_name
+print(extractweekdayasname.head())
+'''
+0     Sunday
+1     Monday
+2     Sunday
+3     Monday
+4    Tuesday
+Name: Newnametimecolumn, dtype: int64
+'''
+extractdaynumberoftheyear = uforeplacetimecolumnnewnewnametimecolumn.Newnametimecolumn.dt.dayofyear
+print(extractdaynumberoftheyear.head())
+'''
+0    152
+1    181
+2     46
+3    152
+4    108
+Name: Newnametimecolumn, dtype: int64
+'''
+print(pd.to_datetime("1/1/1999")) #print 1999-01-01 00:00:00
+print(type(pd.to_datetime("1/1/1999"))) #print <class 'pandas._libs.tslib.Timestamp'>
+timestamps = pd.to_datetime("1/1/1999")
+returnrowsdatelaterthantimestamps = uforeplacetimecolumnnewnewnametimecolumn.loc[uforeplacetimecolumnnewnewnametimecolumn.Newnametimecolumn >= timestamps, :]
+print(returnrowsdatelaterthantimestamps.head())
+'''
+                    City Colors Reported Shape Reported State            Time  \
+12832          Loma Rica             NaN          LIGHT    CA   1/1/1999 2:30   
+12833            Bauxite             NaN            NaN    AR   1/1/1999 3:00   
+12834           Florence             NaN       CYLINDER    SC  1/1/1999 14:00   
+12835       Lake Henshaw             NaN          CIGAR    CA  1/1/1999 15:00   
+12836  Wilmington Island             NaN          LIGHT    GA  1/1/1999 17:15   
+
+        Newnametimecolumn  
+12832 1999-01-01 02:30:00  
+12833 1999-01-01 03:00:00  
+12834 1999-01-01 14:00:00  
+12835 1999-01-01 15:00:00  
+12836 1999-01-01 17:15:00
+...
+'''
+latesttimestamp = uforeplacetimecolumnnewnewnametimecolumn.Newnametimecolumn.max()
+print(latesttimestamp) #print 2000-12-31 23:59:00
+mathtimestamp = uforeplacetimecolumnnewnewnametimecolumn.Newnametimecolumn.max() - uforeplacetimecolumnnewnewnametimecolumn.Newnametimecolumn.min()
+print(mathtimestamp) #print 25781 days 01:59:00
+print(mathtimestamp.days) #print 25781
+
+#How do I find and remove duplicate rows in pandas-ht5buXUMqkQ
+#dataset of movie reviewers modifying the default parameter values for read_table
+usercolumns = ["userid", "age", "gender", "occupation", "zipcode"]
+users = pd.read_table("http://bit.ly/movieusers", sep="|", header=None, names=usercolumns, index_col="userid")
+print(users.head())
+'''
+        age gender  occupation zipcode
+userid                                
+1        24      M  technician   85711
+2        53      F       other   94043
+3        23      M      writer   32067
+4        24      M  technician   43537
+5        33      F       other   15213
+
+'''
+print(users.shape) #print (943,4)
+identifyduplicatezipcodes = users.zipcode.duplicated()
+print(identifyduplicatezipcodes.head())
+'''
+userid
+1    False
+2    False
+3    False
+4    False
+5    False
+Name: zipcode, dtype: bool
+'''
+sumduplicatezipcodes = users.zipcode.duplicated().sum()
+print(sumduplicatezipcodes) #print 148
+identifyduplicaterowdataframe = users.duplicated()
+print(identifyduplicaterowdataframe.head())
+'''
+userid
+1    False
+2    False
+3    False
+4    False
+5    False
+dtype: bool
+'''
+print(identifyduplicaterowdataframe.sum()) #print 7
+returnduplicaterowsprintlastduplicates = users.loc[users.duplicated(keep="first"), :]
+print(returnduplicaterowsprintlastduplicates)
+'''
+        age gender occupation zipcode
+userid                               
+496      21      F    student   55414
+572      51      M   educator   20003
+621      17      M    student   60402
+684      28      M    student   55414
+733      44      F      other   60630
+805      27      F      other   20009
+890      32      M    student   97301
+'''
+returnduplicaterowsprintfirstduplicates = users.loc[users.duplicated(keep="last"), :]
+print(returnduplicaterowsprintfirstduplicates)
+'''
+        age gender occupation zipcode
+userid                               
+67       17      M    student   60402
+85       51      M   educator   20003
+198      21      F    student   55414
+350      32      M    student   97301
+428      28      M    student   55414
+437      27      F      other   20009
+460      44      F      other   60630
+'''
+returnduplicaterowsprintallduplicates = users.loc[users.duplicated(keep=False), :]
+print(returnduplicaterowsprintallduplicates)
+'''
+        age gender occupation zipcode
+userid                               
+67       17      M    student   60402
+85       51      M   educator   20003
+198      21      F    student   55414
+350      32      M    student   97301
+428      28      M    student   55414
+437      27      F      other   20009
+460      44      F      other   60630
+496      21      F    student   55414
+572      51      M   educator   20003
+621      17      M    student   60402
+684      28      M    student   55414
+733      44      F      other   60630
+805      27      F      other   20009
+890      32      M    student   97301
+'''
+deleteduplicates = users.drop_duplicates(keep="first")  #keep="first" is defeault
+print(deleteduplicates.shape) #print (936, 4)
+deleteallduplicates = users.drop_duplicates(keep=False)  #keep="first" is defeault
+print(deleteallduplicates.shape) #print (929, 4)
