@@ -2494,3 +2494,177 @@ deleteduplicates = users.drop_duplicates(keep="first")  #keep="first" is defeaul
 print(deleteduplicates.shape) #print (936, 4)
 deleteallduplicates = users.drop_duplicates(keep=False)  #keep="first" is defeault
 print(deleteallduplicates.shape) #print (929, 4)
+
+import pandas as pd
+
+#How do I avoid a SettingWithCopyWarning in pandas-4R4WsDJ-KVc
+movies = pd.read_csv("http://bit.ly/imdbratings")
+print(movies.head())
+'''
+   star_rating                     title content_rating   genre  duration  \
+0          9.3  The Shawshank Redemption              R   Crime       142   
+1          9.2             The Godfather              R   Crime       175   
+2          9.1    The Godfather: Part II              R   Crime       200   
+3          9.0           The Dark Knight          PG-13  Action       152   
+4          8.9              Pulp Fiction              R   Crime       154   
+
+                                         actors_list  
+0  [u'Tim Robbins', u'Morgan Freeman', u'Bob Gunt...  
+1    [u'Marlon Brando', u'Al Pacino', u'James Caan']  
+2  [u'Al Pacino', u'Robert De Niro', u'Robert Duv...  
+3  [u'Christian Bale', u'Heath Ledger', u'Aaron E...  
+4  [u'John Travolta', u'Uma Thurman', u'Samuel L....  
+'''
+countmissingcontentrating = movies.content_rating.isnull().sum()
+print(countmissingcontentrating) #print 3
+booleanisnull = movies.content_rating.isnull()
+print(booleanisnull.head())
+'''
+0    False
+1    False
+2    False
+3    False
+4    False
+Name: content_rating, dtype: bool
+'''
+print(movies[booleanisnull])  #generate a boolean series to pass to the data frame movies.  content_rating is NaN
+'''
+     star_rating                               title content_rating  \
+187          8.2  Butch Cassidy and the Sundance Kid            NaN   
+649          7.7                   Where Eagles Dare            NaN   
+936          7.4                           True Grit            NaN   
+
+         genre  duration                                        actors_list  
+187  Biography       110  [u'Paul Newman', u'Robert Redford', u'Katharin...  
+649     Action       158  [u'Richard Burton', u'Clint Eastwood', u'Mary ...  
+936  Adventure       128    [u'John Wayne', u'Kim Darby', u'Glen Campbell'] 
+'''
+uniquevaluecountscontentraitng = movies.content_rating.value_counts()
+print(uniquevaluecountscontentraitng)
+'''
+R            460
+PG-13        189
+PG           123
+NOT RATED     65
+APPROVED      47
+UNRATED       38
+G             32
+NC-17          7
+PASSED         7
+X              4
+GP             3
+TV-MA          1
+Name: content_rating, dtype: int64
+'''
+notratedcontentrating = movies[movies.content_rating == "NOT RATED"]
+print(notratedcontentrating.head())
+'''
+    star_rating                           title content_rating    genre  \
+5           8.9                    12 Angry Men      NOT RATED    Drama   
+6           8.9  The Good, the Bad and the Ugly      NOT RATED  Western   
+41          8.5                    Sunset Blvd.      NOT RATED    Drama   
+63          8.4                               M      NOT RATED    Crime   
+66          8.4             Munna Bhai M.B.B.S.      NOT RATED   Comedy   
+
+    duration                                        actors_list  
+5         96  [u'Henry Fonda', u'Lee J. Cobb', u'Martin Bals...  
+6        161  [u'Clint Eastwood', u'Eli Wallach', u'Lee Van ...  
+41       110  [u'William Holden', u'Gloria Swanson', u'Erich...  
+63        99  [u'Peter Lorre', u'Ellen Widmann', u'Inge Land...  
+66       156   [u'Sunil Dutt', u'Sanjay Dutt', u'Arshad Warsi']  
+'''
+notratedcontentratingonly = movies[movies.content_rating == "NOT RATED"].content_rating
+print(notratedcontentratingonly.head())
+'''
+5     NOT RATED
+6     NOT RATED
+41    NOT RATED
+63    NOT RATED
+66    NOT RATED
+Name: content_rating, dtype: object
+'''
+#Overwrite or replace data.  In this case, NOT RATED is np.nan.  Error message.
+import numpy as np
+movies[movies.content_rating == "NOT RATED"].content_rating = np.nan
+'''
+/usr/lib/python3/dist-packages/pandas/core/generic.py:3643: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
+  self[name] = value
+#RM:  movies[movies.content_rating == "NOT RATED"] and .content_rating = np.nan are two operations.  movies[movies.content_rating == "NOT RATED"] is either a view or a copy.
+'''
+countmissingcontentrating = movies.content_rating.isnull().sum()
+print(countmissingcontentrating) #print 3
+#Overwrite or replace data.  In this case, NOT RATED is np.nan.  No error message.
+movies.loc[movies.content_rating == "NOT RATED", "content_rating"] = np.nan
+countmissingcontentrating = movies.content_rating.isnull().sum()
+print(countmissingcontentrating) #print 68
+contentratingnotratedtonan = movies.content_rating.isnull()
+print(movies[contentratingnotratedtonan].head())
+'''
+    star_rating                           title content_rating    genre  \
+5           8.9                    12 Angry Men            NaN    Drama   
+6           8.9  The Good, the Bad and the Ugly            NaN  Western   
+41          8.5                    Sunset Blvd.            NaN    Drama   
+63          8.4                               M            NaN    Crime   
+66          8.4             Munna Bhai M.B.B.S.            NaN   Comedy   
+
+    duration                                        actors_list  
+5         96  [u'Henry Fonda', u'Lee J. Cobb', u'Martin Bals...  
+6        161  [u'Clint Eastwood', u'Eli Wallach', u'Lee Van ...  
+41       110  [u'William Holden', u'Gloria Swanson', u'Erich...  
+63        99  [u'Peter Lorre', u'Ellen Widmann', u'Inge Land...  
+66       156   [u'Sunil Dutt', u'Sanjay Dutt', u'Arshad Warsi']  
+'''
+allninestarratingmovies = movies.loc[movies.star_rating >= 9, :]
+print(allninestarratingmovies)
+'''
+   star_rating                     title content_rating   genre  duration  \
+0          9.3  The Shawshank Redemption              R   Crime       142   
+1          9.2             The Godfather              R   Crime       175   
+2          9.1    The Godfather: Part II              R   Crime       200   
+3          9.0           The Dark Knight          PG-13  Action       152   
+
+                                         actors_list  
+0  [u'Tim Robbins', u'Morgan Freeman', u'Bob Gunt...  
+1    [u'Marlon Brando', u'Al Pacino', u'James Caan']  
+2  [u'Al Pacino', u'Robert De Niro', u'Robert Duv...  
+3  [u'Christian Bale', u'Heath Ledger', u'Aaron E... 
+'''
+#Pretend The Shawshank Redemption duration is incorrect.  Change from 142 to 150.
+allninestarratingmovies.loc[0, "duration"] = 150
+'''
+/usr/lib/python3/dist-packages/pandas/core/indexing.py:537: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
+  self.obj[item] = s
+'''
+print(allninestarratingmovies) #RM:  Warning SettingWithCopyWarning incorrect.  The Shawshank Redemption duration pretended correction worked.  Changed from 142 to 150.  Avoid the error message, add .copy().  allninestarratingmovies = movies.loc[movies.star_rating >= 9, :].copy()
+'''
+   star_rating                     title content_rating   genre  duration  \
+0          9.3  The Shawshank Redemption              R   Crime       150   
+1          9.2             The Godfather              R   Crime       175   
+2          9.1    The Godfather: Part II              R   Crime       200   
+3          9.0           The Dark Knight          PG-13  Action       152   
+
+                                         actors_list  
+0  [u'Tim Robbins', u'Morgan Freeman', u'Bob Gunt...  
+1    [u'Marlon Brando', u'Al Pacino', u'James Caan']  
+2  [u'Al Pacino', u'Robert De Niro', u'Robert Duv...  
+3  [u'Christian Bale', u'Heath Ledger', u'Aaron E...  
+'''
+#Correction no error message
+allninestarratingmoviesnoerrormessage = movies.loc[movies.star_rating >= 9, :].copy()
+allninestarratingmoviesnoerrormessage.loc[0, "duration"] = 555
+print(allninestarratingmoviesnoerrormessage.loc[allninestarratingmoviesnoerrormessage.title == "The Shawshank Redemption"])
+'''
+   star_rating                     title content_rating  genre  duration  \
+0          9.3  The Shawshank Redemption              R  Crime       555   
+
+                                         actors_list  
+0  [u'Tim Robbins', u'Morgan Freeman', u'Bob Gunt...  
+'''
