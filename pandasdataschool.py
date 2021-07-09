@@ -2668,3 +2668,229 @@ print(allninestarratingmoviesnoerrormessage.loc[allninestarratingmoviesnoerrorme
                                          actors_list  
 0  [u'Tim Robbins', u'Morgan Freeman', u'Bob Gunt...  
 '''
+
+#How do I change display options in pandas-yiO43TQ4xvc
+drinks = pd.read_csv("http://bit.ly/drinksbycountry")
+howmanyrowsdisplay = pd.get_option("display.max_rows")
+print(howmanyrowsdisplay) #print 60  RM:  run print(drinks) returns 60 rows.  Top 30 rows and bottom 30 rows.
+pd.set_option("display.max_rows", None) #Set how many rows displayed.  None means show all rows
+#print(drinks) #prints all rows
+pd.reset_option("display.max_rows") #Reset number of rows displayed.
+#print(drinks) #prints 60 rows.  Top 30 rows and bottom 30 rows.
+howmanycolumnsdisplayed = pd.get_option("display.max_columns")
+print(howmanycolumnsdisplayed) #print 20
+train = pd.read_csv("http://bit.ly/kaggletrain")
+print(train.head())
+'''
+   PassengerId  Survived  Pclass  \
+0            1         0       3   
+1            2         1       1   
+2            3         1       3   
+3            4         1       1   
+4            5         0       3   
+
+                                                Name     Sex   Age  SibSp  \
+0                            Braund, Mr. Owen Harris    male  22.0      1   
+1  Cumings, Mrs. John Bradley (Florence Briggs Th...  female  38.0      1   
+2                             Heikkinen, Miss. Laina  female  26.0      0   
+3       Futrelle, Mrs. Jacques Heath (Lily May Peel)  female  35.0      1   
+4                           Allen, Mr. William Henry    male  35.0      0   
+
+   Parch            Ticket     Fare Cabin Embarked  
+0      0         A/5 21171   7.2500   NaN        S  
+1      0          PC 17599  71.2833   C85        C  
+2      0  STON/O2. 3101282   7.9250   NaN        S  
+3      0            113803  53.1000  C123        S  
+4      0            373450   8.0500   NaN        S  
+'''
+howlongcolumnwidthdisplay = pd.get_option("display.max_colwidth")
+print(howlongcolumnwidthdisplay) #print 50
+pd.set_option("display.max_colwidth", 1000) #set max width all columns to 1000 characters
+print(train.head())
+'''
+   PassengerId  Survived  Pclass  \
+0            1         0       3   
+1            2         1       1   
+2            3         1       3   
+3            4         1       1   
+4            5         0       3   
+
+                                                  Name     Sex   Age  SibSp  \
+0                              Braund, Mr. Owen Harris    male  22.0      1   
+1  Cumings, Mrs. John Bradley (Florence Briggs Thayer)  female  38.0      1   
+2                               Heikkinen, Miss. Laina  female  26.0      0   
+3         Futrelle, Mrs. Jacques Heath (Lily May Peel)  female  35.0      1   
+4                             Allen, Mr. William Henry    male  35.0      0   
+
+   Parch            Ticket     Fare Cabin Embarked  
+0      0         A/5 21171   7.2500   NaN        S  
+1      0          PC 17599  71.2833   C85        C  
+2      0  STON/O2. 3101282   7.9250   NaN        S  
+3      0            113803  53.1000  C123        S  
+4      0            373450   8.0500   NaN        S  
+'''
+numberofdecimalsdisplay = pd.get_option("display.precision")
+print(numberofdecimalsdisplay) #print 6
+pd.set_option("display.precision", 2) #set decimal places to two
+print(train.head())
+'''
+   PassengerId  Survived  Pclass  \
+0            1         0       3   
+1            2         1       1   
+2            3         1       3   
+3            4         1       1   
+4            5         0       3   
+
+                                                  Name     Sex   Age  SibSp  \
+0                              Braund, Mr. Owen Harris    male  22.0      1   
+1  Cumings, Mrs. John Bradley (Florence Briggs Thayer)  female  38.0      1   
+2                               Heikkinen, Miss. Laina  female  26.0      0   
+3         Futrelle, Mrs. Jacques Heath (Lily May Peel)  female  35.0      1   
+4                             Allen, Mr. William Henry    male  35.0      0   
+
+   Parch            Ticket   Fare Cabin Embarked  
+0      0         A/5 21171   7.25   NaN        S  
+1      0          PC 17599  71.28   C85        C  
+2      0  STON/O2. 3101282   7.92   NaN        S  
+3      0            113803  53.10  C123        S  
+4      0            373450   8.05   NaN        S 
+'''
+print(drinks.head())
+'''
+       country  beer_servings  spirit_servings  wine_servings  \
+0  Afghanistan              0                0              0   
+1      Albania             89              132             54   
+2      Algeria             25                0             14   
+3      Andorra            245              138            312   
+4       Angola            217               57             45   
+
+   total_litres_of_pure_alcohol continent  
+0                           0.0      Asia  
+1                           4.9    Europe  
+2                           0.7    Africa  
+3                          12.4    Europe  
+4                           5.9    Africa  
+'''
+drinks["newcolumnmultiplywineservings"] = drinks.wine_servings * 1000
+drinks["newcolumnmultiplytotallitrespurealcohol"] = drinks.total_litres_of_pure_alcohol * 1000
+print(drinks.head())
+'''
+       country  beer_servings  spirit_servings  wine_servings  \
+0  Afghanistan              0                0              0   
+1      Albania             89              132             54   
+2      Algeria             25                0             14   
+3      Andorra            245              138            312   
+4       Angola            217               57             45   
+
+   total_litres_of_pure_alcohol continent  newcolumnmultiplywineservings  
+0                           0.0      Asia                              0  
+1                           4.9    Europe                          54000  
+2                           0.7    Africa                          14000  
+3                          12.4    Europe                         312000  
+4                           5.9    Africa                          45000  
+'''
+pd.set_option("display.float_format", "{:,}".format)
+print(drinks.head())  #RM:  notice newcolumnmultiplytotallitrespurealcohol includes commas only.  Reason is wine_servings is integer.  total_litres_of_pure_alcohol is float.  Instructor says no easy to to add commas to integers.
+'''
+   total_litres_of_pure_alcohol continent  newcolumnmultiplywineservings  \
+0                           0.0      Asia                              0   
+1                           4.9    Europe                          54000   
+2                           0.7    Africa                          14000   
+3                          12.4    Europe                         312000   
+4                           5.9    Africa                          45000   
+
+   newcolumnmultiplytotallitrespurealcohol  
+0                                      0.0  
+1                                  4,900.0  
+2                                    700.0  
+3                                 12,400.0  
+4                                  5,900.0  
+'''
+helppandasoptions = pd.describe_option()
+print(helppandasoptions)
+helppandasoptionssearchrows = pd.describe_option("rows")
+print(helppandasoptionssearchrows)
+pd.reset_option("all") #reset all options to default.  Okay to ignore warnings.
+
+#How do I create a pandas DataFrame from another object--Ov1N1_FbP8
+newdataframe = pd.DataFrame({"id": [100, 101, 102], "color": ["red", "blue", "red"], "columnname": ["row1", "row2", "row3"]}, columns=["id", "color", "columnname"], index=["labelindexa", "labelindexb", "labelindexc"])
+print(newdataframe)
+'''
+              id color columnname
+labelindexa  100   red       row1
+labelindexb  101  blue       row2
+labelindexc  102   red       row3
+'''
+passalistdataframe = pd.DataFrame([[100, "red"], [101, "blue"], [102, "red"]])
+print(passalistdataframe)
+'''
+     0     1
+0  100   red
+1  101  blue
+2  102   red
+'''
+passalistdataframewithcolumns = pd.DataFrame([[100, "red"], [101, "blue"], [102, "red"]], columns={"id", "color"})
+print(passalistdataframewithcolumns)
+'''
+    id color
+0  100   red
+1  101  blue
+2  102   red
+'''
+import numpy as np
+randomnumbers = np.random.rand(4, 2) #create a uniform distribution random numbers between 0 and 1 four rows and two columns
+convertnumpytopandasdataframe = pd.DataFrame(randomnumbers, columns=["columnone", "columntwo"])
+print(convertnumpytopandasdataframe)
+'''
+   columnone  columntwo
+0   0.787451   0.756757
+1   0.975423   0.471959
+2   0.262481   0.132679
+3   0.609112   0.781030
+'''
+numpyrandomdataframe = pd.DataFrame({"ten student ids": np.arange(100, 110), "ten test scores": np.random.randint(60, 101, 10)})
+print(numpyrandomdataframe)
+'''
+   ten student ids  ten test scores
+0              100               97
+1              101               81
+2              102               99
+3              103               89
+4              104               71
+5              105               93
+6              106               92
+7              107               61
+8              108               81
+9              109               76
+'''
+numpyrandomdataframesetstudentidsasindex = pd.DataFrame({"ten student ids": np.arange(100, 110), "ten test scores": np.random.randint(60, 101, 10)}).set_index("ten student ids")
+print(numpyrandomdataframesetstudentidsasindex)
+'''
+                 ten test scores
+ten student ids                 
+100                          100
+101                           75
+102                           83
+103                           81
+104                           90
+105                           67
+106                           82
+107                           63
+108                           64
+109                           97
+'''
+shapeseries = pd.Series(["round", "square"], index=["labelindexc", "labelindexb"], name="series identifier shape")
+print(shapeseries)
+'''
+labelindexc     round
+labelindexb    square
+Name: series identifier shape, dtype: object
+'''
+combinedatframeandseries = pd.concat([newdataframe, shapeseries], axis=1)
+print(combinedatframeandseries)
+'''
+              id color columnname series identifier shape
+labelindexa  100   red       row1                     NaN
+labelindexb  101  blue       row2                  square
+labelindexc  102   red       row3                   round
+'''
